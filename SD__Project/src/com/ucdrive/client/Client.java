@@ -65,6 +65,14 @@ public class Client {
                         Login login = new Login();
                         login.login_(in, out, reader);
                         System.out.println("Logged in!");
+
+                        AuthenticatedMenu authMenu = new AuthenticatedMenu();
+                        authMenu.authenticatedMenu(in, out, reader);
+
+                        String data = in.readUTF();
+                        String choice_ = reader.readLine();
+                        out.writeUTF(choice_);
+
                         /*
                          * 
                          * System.out.println("Introduza texto:");

@@ -1,7 +1,38 @@
 package com.ucdrive.client.commands;
 
-public class ChangePassword {
-    public ChangePassword() {
+import java.io.*;
 
+public class ChangePassword {
+    private String password, newPassword;
+
+    public ChangePassword() {
+        password = null;
+        newPassword = null;
+    }
+
+    public void changePassword(DataInputStream in, DataOutputStream out, BufferedReader reader) throws IOException {
+        System.out.println("------------ Change password -------------");
+        String data = "Invalid password!";
+        do {
+            System.out.print("Current password: ");
+
+            // Reads password from std.in
+            password = reader.readLine();
+
+            // Sends username to server
+            out.writeUTF(password);
+
+            // Server sends ACK saying if password exists or not
+            data = in.readUTF();
+        } while (data.equals("Invalid password!"));
+
+        System.out.print("New password: ");
+
+        // Reads password from std.in
+        password = reader.readLine();
+
+        // Sends password to server
+        out.writeUTF(password);
+        System.out.println();
     }
 }
