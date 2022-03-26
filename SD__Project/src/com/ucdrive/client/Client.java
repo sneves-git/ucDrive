@@ -1,18 +1,29 @@
 package com.ucdrive.client;
 
+import com.ucdrive.refactorLater.User;
+
 import java.util.*;
 import java.io.*;
 import java.net.*;
 
+import static com.ucdrive.client.commands.ConfigureIpAndPort.configureIpAndPort;
+import static com.ucdrive.client.commands.Login.login_;
+import static com.ucdrive.configs.UsersConfigsFile.readUsersInfo;
+import static com.ucdrive.refactorLater.Users.getUsers;
+
 public class Client {
+    private static Socket s = null;
+    private static int serverPort = -1;
+    private static String ipAddress = null;
+
 
     public static void main(String[] args) {
+        readUsersInfo(getUsers());
+
         // Login
-        Socket s = null;
-        int serverPort = -1, choice = 0;
-        String path = "../configs/";
+        int choice = 0;
+        String path = "src/com/ucdrive/configs/";
         String fileName = "configs_ip_port.txt";
-        String ipAddress = null;
         Writer output;
 
         // Read ip and port info
@@ -31,18 +42,21 @@ public class Client {
             System.out.println("An error occurred with " + fileName + ".");
             e1.printStackTrace();
         }
-        Menu menu = new Menu();
+
+        FirstMenu menu = new FirstMenu();
         do {
-            choice = 2;
+            choice = menu.chooseOption();
             switch (choice) {
                 case 1:
+                    configureIpAndPort();
                     break;
                 case 2:
                     try {
                         // 1o passo
                         s = new Socket(ipAddress, serverPort);
-                        System.out.println("SERVER SOCKER = " + serverPort);
+                        System.out.println("SERVER PORT = " + serverPort);
                         System.out.println("SOCKET=" + s);
+
                         // 2o passo
                         DataInputStream in = new DataInputStream(s.getInputStream());
                         DataOutputStream out = new DataOutputStream(s.getOutputStream());
@@ -50,6 +64,9 @@ public class Client {
                         String texto = "";
                         InputStreamReader input = new InputStreamReader(System.in);
                         BufferedReader reader = new BufferedReader(input);
+
+                        User user = login_(in, out, reader);
+
                         System.out.println("Introduza texto:");
 
                         // 3o passo
@@ -93,4 +110,3 @@ public class Client {
     }
 
 }
-

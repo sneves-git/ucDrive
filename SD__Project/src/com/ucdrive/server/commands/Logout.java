@@ -1,4 +1,4 @@
-package com.ucdrive.server;
+package com.ucdrive.server.commands;
 
 import java.util.*;
 import java.io.*;

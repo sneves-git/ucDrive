@@ -3,16 +3,17 @@ package com.ucdrive.client;
 import java.util.*;
 
 // All menus from client, authentication menu, logged in menu, ...
-public class Menu {
+public class FirstMenu {
     Scanner sc;
 
-    public Menu() {
+    public FirstMenu() {
         sc = new Scanner(System.in);
     }
 
-    public int clientMenu() {
+
+    public int chooseOption() {
         System.out.print("Choose one of the following options:\n"
-                + "\t1 - Configure IP and port of server\n"
+                + "\t1 - Configure IP and port of servers\n"
                 + "\t2 - Login\n"
                 + "\t3 - Exit\n"
                 + "Choice: ");
@@ -37,7 +38,7 @@ public class Menu {
 
                 System.out.print("\nInvalid option.\n\n"
                         + "Choose one of the following options:\n"
-                        + "\t1 - Configure IP and port of server\n"
+                        + "\t1 - Configure IP and port of servers\n"
                         + "\t2 - Login\n"
                         + "\t3 - Exit\n"
                         + "Choice: ");
@@ -46,8 +47,28 @@ public class Menu {
             System.out.println("Login.java in Menu() - An error occurred with scanner.");
             e.printStackTrace();
         }
+        /*
+        *
+        switch (choice) {
+            case 1:
+                configureIPandPortServers();
+                break;
+            case 2:
+                login_();
+                break;
+            default:
+                Exit();
+        }
+        * */
+
         return choice;
     }
+
+    public void configureIPandPortServers() {
+
+    }
+
+
 
     @Override
     public String toString() {
