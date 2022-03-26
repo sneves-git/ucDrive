@@ -1,24 +1,19 @@
 package com.ucdrive.client;
 
+import com.ucdrive.client.commands.Login;
+import com.ucdrive.client.commands.ConfigureIpAndPort;
 import com.ucdrive.refactorLater.User;
 
 import java.util.*;
 import java.io.*;
 import java.net.*;
 
-import static com.ucdrive.client.commands.ConfigureIpAndPort.configureIpAndPort;
-import static com.ucdrive.client.commands.Login.login_;
-import static com.ucdrive.configs.UsersConfigsFile.readUsersInfo;
-import static com.ucdrive.refactorLater.Users.getUsers;
-
 public class Client {
     private static Socket s = null;
     private static int serverPort = -1;
     private static String ipAddress = null;
 
-
     public static void main(String[] args) {
-        readUsersInfo(getUsers());
 
         // Login
         int choice = 0;
@@ -48,7 +43,8 @@ public class Client {
             choice = menu.chooseOption();
             switch (choice) {
                 case 1:
-                    configureIpAndPort();
+                    ConfigureIpAndPort configureIpPort = new ConfigureIpAndPort();
+                    configureIpPort.configureIpAndPort();
                     break;
                 case 2:
                     try {
@@ -65,27 +61,33 @@ public class Client {
                         InputStreamReader input = new InputStreamReader(System.in);
                         BufferedReader reader = new BufferedReader(input);
 
-                        User user = login_(in, out, reader);
-
-                        System.out.println("Introduza texto:");
-
-                        // 3o passo
-                        while (true) {
-                            // READ STRING FROM KEYBOARD
-                            try {
-                                texto = reader.readLine();
-                            } catch (Exception e) {
-                            }
-
-                            // WRITE INTO THE SOCKET
-                            out.writeUTF(texto);
-
-                            // READ FROM SOCKET
-                            String data = in.readUTF();
-
-                            // DISPLAY WHAT WAS READ
-                            System.out.println("Received: " + data);
-                        }
+                        out.writeUTF("login");
+                        Login login = new Login();
+                        login.login_(in, out, reader);
+                        System.out.println("Logged in!");
+                        /*
+                         * 
+                         * System.out.println("Introduza texto:");
+                         * 
+                         * // 3o passo
+                         * while (true) {
+                         * // READ STRING FROM KEYBOARD
+                         * try {
+                         * texto = reader.readLine();
+                         * } catch (Exception e) {
+                         * }
+                         * 
+                         * // WRITE INTO THE SOCKET
+                         * out.writeUTF(texto);
+                         * 
+                         * // READ FROM SOCKET
+                         * String data = in.readUTF();
+                         * 
+                         * // DISPLAY WHAT WAS READ
+                         * System.out.println("Received: " + data);
+                         * }
+                         * 
+                         */
 
                     } catch (UnknownHostException e) {
                         System.out.println("Sock:" + e.getMessage());

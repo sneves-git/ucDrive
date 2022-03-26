@@ -8,59 +8,48 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Scanner;
 
-import static com.ucdrive.refactorLater.Users.*;
-import static com.ucdrive.refactorLater.Users.getUsers;
-import static com.ucdrive.configs.UsersConfigsFile.readUsersInfo;
-
 public class Login {
-    private static Scanner sc = new Scanner(System.in);
-    private static String username = null, password = null;
+    private String username, password;
 
+    public Login() {
+        username = null;
+        password = null;
+    }
 
-    public static User login_(DataInputStream in, DataOutputStream out, BufferedReader reader) throws IOException {
+    public void login_(DataInputStream in, DataOutputStream out, BufferedReader reader) throws IOException {
         System.out.println("------------ Login -------------");
-        String data = "false", text = null;
-        do{
+        String data = "Username does not exist!";
+        do {
             System.out.print("Username: ");
-            if (sc.hasNextLine()) {
-                // Reads username from std.in
-                text = reader.readLine();
 
-                // Sends username to server
-                out.writeUTF(text);
+            // Reads username from std.in
+            username = reader.readLine();
 
-                // Server sends ACK saying if user exists or not
-                data = in.readUTF();
-            }
-        }while(data.equals("false"));
+            // Sends username to server
+            out.writeUTF(username);
 
+            // Server sends ACK saying if user exists or not
+            data = in.readUTF();
+
+        } while (data.equals("Username does not exist!"));
+
+        data = "Invalid password!";
         do {
             System.out.print("Password: ");
-            if (sc.hasNextLine()) {
-                // Reads password from std.in
-                text = reader.readLine();
+            // Reads password from std.in
+            password = reader.readLine();
 
-                // Sends password to server
-                out.writeUTF(sc.nextLine());
+            // Sends password to server
+            out.writeUTF(password);
 
-                // Server sends ACK saying if password exists or not
-                data = in.readUTF();
-            }
-        } while (data.equals("false"));
+            // Server sends ACK saying if password exists or not
+            data = in.readUTF();
+
+        } while (data.equals("Invalid password!"));
         System.out.println();
-
-
-        User user = null;
-        for (User u : getUsers()) {
-            if (u.getUsername().equals(username)) {
-                user = u;
-            }
-        }
-
-        return user;
 
         // VER ISTO QUE FALTA!
         // -------------------
-        //clientsApplication(user);
+        // clientsApplication(user, users);
     }
 }

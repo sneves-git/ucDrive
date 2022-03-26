@@ -5,6 +5,10 @@ import com.ucdrive.refactorLater.User;
 import java.io.File;
 
 public class ListFiles {
+    public ListFiles() {
+
+    }
+
     private void listServerFiles(User user) {
         String path = "src/com/ucdrive/server/Home/";
 

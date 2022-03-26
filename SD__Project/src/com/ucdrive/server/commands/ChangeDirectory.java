@@ -1,18 +1,22 @@
 package com.ucdrive.server.commands;
 
+import com.ucdrive.configs.UsersConfigsFile;
 import com.ucdrive.refactorLater.User;
+import com.ucdrive.refactorLater.Users;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
-import static com.ucdrive.configs.UsersConfigsFile.updateUsersFile;
-
 public class ChangeDirectory {
-    private static Scanner sc = new Scanner(System.in);
+    private Scanner sc;
 
-    private boolean isValidCommand(String choice, User user) {
+    public ChangeDirectory() {
+        sc = new Scanner(System.in);
+    }
+
+    private boolean isValidCommand(String choice, User user, Users users, UsersConfigsFile usersConfigsFile) {
         String path = "src/com/ucdrive/server/Home/";
         String fileName = "src/com/ucdrive/configs/users.txt";
 
@@ -33,13 +37,14 @@ public class ChangeDirectory {
                 newPath += list.get(i);
                 user.setLastSession(newPath);
             }
-            updateUsersFile(fileName);
+            usersConfigsFile.updateUsersFile(fileName, users);
             return true;
         }
+
         for (String folder : folders) {
             if (choice.equals("cd " + folder) || choice.equals(folder)) {
                 user.setLastSession(user.getLastSession() + "/" + folder);
-                updateUsersFile(fileName);
+                usersConfigsFile.updateUsersFile(fileName, users);
                 return true;
             }
         }
@@ -47,7 +52,7 @@ public class ChangeDirectory {
         return false;
     }
 
-    private void changeServersDirectory(User user) {
+    private void changeServersDirectory(User user, Users users, UsersConfigsFile usersConfigsFile) {
         String choice = null;
         do {
             System.out.print(user.getLastSession() + "> ");
@@ -55,7 +60,7 @@ public class ChangeDirectory {
                 choice = sc.nextLine();
             }
 
-        } while (!isValidCommand(choice, user));
+        } while (!isValidCommand(choice, user, users, usersConfigsFile));
 
         // Update users configs with new directory
 

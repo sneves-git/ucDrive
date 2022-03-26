@@ -4,14 +4,14 @@ import java.io.*;
 import java.util.ArrayList;
 
 public class User implements Serializable {
-	private static String username,
-							password,
-							department,
-							address,
-							expirationDate,
-							phoneNumber,
-							CCnumber,
-							lastSession;
+	private String username,
+			password,
+			department,
+			address,
+			expirationDate,
+			phoneNumber,
+			CCnumber,
+			lastSession;
 
 	// Constructors
 	public User() {
@@ -38,7 +38,7 @@ public class User implements Serializable {
 	}
 
 	// functions
-	public static ArrayList<String> getUserFolders(String path) {
+	public ArrayList<String> getUserFolders(String path) {
 		ArrayList<String> folders = new ArrayList<String>();
 
 		File dir = new File(path + lastSession);
@@ -56,11 +56,11 @@ public class User implements Serializable {
 		return folders;
 	}
 
-
 	// getters and setters
 	public String getUsername() {
 		return username;
 	}
+
 	public void setUsername(String newName) {
 		this.username = newName;
 	}
@@ -68,6 +68,7 @@ public class User implements Serializable {
 	public String getPassword() {
 		return password;
 	}
+
 	public void setPassword(String newPassword) {
 		this.password = newPassword;
 	}
@@ -75,6 +76,7 @@ public class User implements Serializable {
 	public String getDepartment() {
 		return department;
 	}
+
 	public void setDepartament(String newDepartment) {
 		this.department = newDepartment;
 	}
@@ -82,6 +84,7 @@ public class User implements Serializable {
 	public String getAddress() {
 		return address;
 	}
+
 	public void setAddress(String newAddress) {
 		this.address = newAddress;
 	}
@@ -89,6 +92,7 @@ public class User implements Serializable {
 	public String getExpirationDate() {
 		return expirationDate;
 	}
+
 	public void setExpirationDate(String newExpirationDate) {
 		this.expirationDate = newExpirationDate;
 	}
@@ -96,6 +100,7 @@ public class User implements Serializable {
 	public String getPhoneNumber() {
 		return phoneNumber;
 	}
+
 	public void setPhoneNumber(String newPhoneNumber) {
 		this.phoneNumber = newPhoneNumber;
 	}
@@ -103,6 +108,7 @@ public class User implements Serializable {
 	public String getCCnumber() {
 		return CCnumber;
 	}
+
 	public void setCCnumber(String newCCnumber) {
 		this.phoneNumber = newCCnumber;
 	}
@@ -110,10 +116,10 @@ public class User implements Serializable {
 	public String getLastSession() {
 		return lastSession;
 	}
+
 	public void setLastSession(String newLastSession) {
 		this.lastSession = newLastSession;
 	}
-
 
 	// toString method
 	public String toString() {

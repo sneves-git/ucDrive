@@ -1,18 +1,19 @@
 package com.ucdrive.configs;
 
 import com.ucdrive.refactorLater.User;
+import com.ucdrive.refactorLater.Users;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Scanner;
-
-import static com.ucdrive.refactorLater.Users.getUsers;
-
 
 // Class to: extract from the file configs the user's information (readUsersInfo)
 //           update content of user's configs file                (updateUsersFile)
 public class UsersConfigsFile {
-    public static void readUsersInfo(ArrayList<User> users) {
+
+    public UsersConfigsFile() {
+    }
+
+    public void readUsersInfo(Users users) {
         String users_file_name = "src/com/ucdrive/configs/users.txt";
 
         try {
@@ -26,7 +27,7 @@ public class UsersConfigsFile {
 
                 User user = new User(array_info[0], array_info[1], array_info[2], array_info[3], array_info[4],
                         array_info[5], array_info[6], array_info[7]);
-                users.add(user);
+                (users.getUsers()).add(user);
 
                 System.out.println(user);
             }
@@ -37,11 +38,11 @@ public class UsersConfigsFile {
         }
     }
 
-    public static void updateUsersFile(String fileName) {
+    public void updateUsersFile(String fileName, Users users) {
         Writer output;
         try {
             output = new BufferedWriter(new FileWriter(fileName));
-            for (User user : getUsers()) {
+            for (User user : users.getUsers()) {
                 output.append(user.getUsername() + "::" + user.getPassword() + "::" + user.getDepartment() + "::"
                         + user.getAddress() + "::"
                         + user.getPhoneNumber() + "::" + user.getExpirationDate() + "::" + user.getCCnumber()
@@ -54,5 +55,4 @@ public class UsersConfigsFile {
             e1.printStackTrace();
         }
     }
-
 }

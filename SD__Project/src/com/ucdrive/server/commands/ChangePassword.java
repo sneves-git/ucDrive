@@ -1,38 +1,39 @@
 package com.ucdrive.server.commands;
 
+import com.ucdrive.configs.UsersConfigsFile;
 import com.ucdrive.refactorLater.User;
+import com.ucdrive.refactorLater.Users;
 
-import java.util.Scanner;
-
-import static com.ucdrive.configs.UsersConfigsFile.updateUsersFile;
-import static com.ucdrive.refactorLater.Users.CheckIfPasswordIsCorrect;
+import java.util.*;
+import java.io.*;
 
 public class ChangePassword {
-    Scanner sc = new Scanner(System.in);
+    Scanner sc;
 
-    private void changePassword(User user) {
+    public ChangePassword() {
+        sc = new Scanner(System.in);
+    }
+
+    public void changePassword(User user, Users users, DataInputStream in, DataOutputStream out) throws IOException {
         String password = null, newPassword = null;
         boolean flag = false;
 
         do {
-            System.out.println("Insert your current password: ");
-            if (sc.hasNextLine()) {
-                password = sc.nextLine();
-            }
-        } while (!CheckIfPasswordIsCorrect(user.getUsername(), password));
+            password = in.readUTF();
+        } while (!users.CheckIfPasswordIsCorrect(user.getUsername(), password, out));
 
-        do {
-            System.out.println("Insert your new password: ");
-            if (sc.hasNextLine()) {
-                newPassword = sc.nextLine();
-                flag = true;
-            }
-        } while (!flag);
-        System.out.println("Password changed successfully!");
-        user.setPassword(newPassword);
+        newPassword = in.readUTF();
 
+        out.writeUTF("Password changed successfully!");
+        for (User u : users.getUsers()) {
+            if (u.getUsername().equals(user.getUsername())) {
+                u.setPassword(newPassword);
+            }
+        }
         String fileName = "src/com/ucdrive/configs/users.txt";
-        updateUsersFile(fileName);
+        UsersConfigsFile conf = new UsersConfigsFile();
+        conf.updateUsersFile(fileName, users);
 
     }
+
 }

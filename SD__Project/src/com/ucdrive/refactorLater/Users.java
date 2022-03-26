@@ -1,47 +1,51 @@
 package com.ucdrive.refactorLater;
 
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 
 public class Users implements Serializable {
-    private static ArrayList<User> users;
+    private ArrayList<User> users;
 
-    public Users(){
+    public Users() {
         users = new ArrayList<User>();
     }
 
-    public static boolean CheckIfUsernameExists(String username) {
+    public boolean CheckIfUsernameExists(String username, DataOutputStream out) throws IOException {
         for (User user : users) {
             if (user.getUsername().equals(username)) {
+                out.writeUTF("Username exists!");
                 return true;
             }
         }
-        System.out.println("Username does not exist!");
+        out.writeUTF("Username does not exist!");
         return false;
     }
 
-    public static boolean CheckIfPasswordIsCorrect(String username, String password) {
+    public boolean CheckIfPasswordIsCorrect(String username, String password, DataOutputStream out) throws IOException {
         for (User user : users) {
             if (user.getUsername().equals(username)) {
                 if (user.getPassword().equals(password)) {
+                    out.writeUTF("Valid password!");
                     return true;
                 }
-                System.out.println("Invalid password!");
+                out.writeUTF("Invalid password!");
                 return false;
             }
         }
+        out.writeUTF("Invalid password!");
         return false;
     }
 
-
     // getters and setters
-    public static ArrayList<User> getUsers() {
+    public ArrayList<User> getUsers() {
         return users;
     }
+
     public void setUsers(ArrayList<User> newUsers) {
         users = newUsers;
     }
-
 
     // toString
     @Override

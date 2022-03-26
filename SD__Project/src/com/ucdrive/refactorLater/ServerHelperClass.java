@@ -3,14 +3,15 @@ package com.ucdrive.refactorLater;
 import java.util.*;
 import java.io.*;
 
-public class ServerHelperClass{
+public class ServerHelperClass {
 	ArrayList<String> directories;
 
 	public ServerHelperClass() {
 		directories = new ArrayList<String>();
 	}
 
-	// Function to search for all folders and files within a certain starting directory
+	// Function to search for all folders and files within a certain starting
+	// directory
 	// Stores all the directories and folders
 	public void listFiles(Folder directory, String startDir) {
 
@@ -37,7 +38,5 @@ public class ServerHelperClass{
 			}
 		}
 	}
-
-
 
 }

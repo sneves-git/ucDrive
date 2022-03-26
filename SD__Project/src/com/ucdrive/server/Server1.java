@@ -1,8 +1,13 @@
 package com.ucdrive.server;
 
+import com.ucdrive.server.commands.Login;
+import com.ucdrive.server.commands.ChangePassword;
+
+import com.ucdrive.configs.UsersConfigsFile;
 import com.ucdrive.refactorLater.Folder;
 import com.ucdrive.refactorLater.ServerHelperClass;
-
+import com.ucdrive.refactorLater.User;
+import com.ucdrive.refactorLater.Users;
 
 import java.io.*;
 import java.net.*;
@@ -13,15 +18,18 @@ import java.util.*;
 public class Server1 {
 
     public static void main(String[] args) {
+        Users users = new Users();
+        UsersConfigsFile usersConfigsFile = new UsersConfigsFile();
+        usersConfigsFile.readUsersInfo(users);
 
         ServerHelperClass helper = new ServerHelperClass();
         String startDir = ".";
 
+        ServerFoldersCheck check = new ServerFoldersCheck();
+        check.checkingFolders(users.getUsers());
+
         Folder home = new Folder(startDir);
         helper.listFiles(home, startDir);
-
-        System.out.println(home);
-
 
         Path currentRelativePath = Paths.get("");
         String s = currentRelativePath.toAbsolutePath().toString();
@@ -46,9 +54,10 @@ public class Server1 {
                 System.out.println("LISTEN SOCKET=" + listenSocket);
                 while (true) {
                     Socket clientSocket = listenSocket.accept(); // BLOQUEANTE
+
                     System.out.println("CLIENT_SOCKET (created at accept())=" + clientSocket);
                     numero++;
-                    new Connection(clientSocket, numero);
+                    new Connection(users, clientSocket, numero);
                 }
             } catch (Exception e) {
                 System.out.println("Error with server socket: " + e);
@@ -66,9 +75,12 @@ class Connection extends Thread {
     DataOutputStream out;
     Socket clientSocket;
     int thread_number;
+    Users users;
+    User user;
 
-    public Connection(Socket aClientSocket, int numero) {
+    public Connection(Users users, Socket aClientSocket, int numero) {
         thread_number = numero;
+        this.users = users;
         try {
             clientSocket = aClientSocket;
             in = new DataInputStream(clientSocket.getInputStream());
@@ -84,11 +96,29 @@ class Connection extends Thread {
         String resposta;
         try {
             while (true) {
-                // an echo server
+                // Receives signal that user wants to log in
                 String data = in.readUTF();
-                System.out.println("T[" + thread_number + "] Recebeu: " + data);
-                resposta = data.toUpperCase();
-                out.writeUTF(resposta);
+                switch (data) {
+                    case "login":
+                        Login login = new Login();
+                        this.user = login.login_(this.users, in, out);
+
+                        AuthenticatedMenu authMenu = new AuthenticatedMenu();
+
+                        break;
+                    case "changePassword":
+                        ChangePassword change = new ChangePassword();
+                        change.changePassword(user, users, in, out);
+
+                }
+
+                /*
+                 * // an echo server
+                 * String data = in.readUTF();
+                 * System.out.println("T[" + thread_number + "] Recebeu: " + data);
+                 * resposta = data.toUpperCase();
+                 * out.writeUTF(resposta);
+                 */
             }
         } catch (EOFException e) {
             System.out.println("EOF:" + e);

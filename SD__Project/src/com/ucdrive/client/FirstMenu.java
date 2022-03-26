@@ -10,7 +10,6 @@ public class FirstMenu {
         sc = new Scanner(System.in);
     }
 
-
     public int chooseOption() {
         System.out.print("Choose one of the following options:\n"
                 + "\t1 - Configure IP and port of servers\n"
@@ -48,18 +47,18 @@ public class FirstMenu {
             e.printStackTrace();
         }
         /*
-        *
-        switch (choice) {
-            case 1:
-                configureIPandPortServers();
-                break;
-            case 2:
-                login_();
-                break;
-            default:
-                Exit();
-        }
-        * */
+         *
+         * switch (choice) {
+         * case 1:
+         * configureIPandPortServers();
+         * break;
+         * case 2:
+         * login_();
+         * break;
+         * default:
+         * Exit();
+         * }
+         */
 
         return choice;
     }
@@ -68,11 +67,8 @@ public class FirstMenu {
 
     }
 
-
-
     @Override
     public String toString() {
         return "Menu";
     }
 }
-
