@@ -12,6 +12,16 @@ public class Users implements Serializable {
         users = new ArrayList<User>();
     }
 
+    public User getUserWithGivenUsername(String username) {
+        User user = null;
+        for (User u : users) {
+            if (u.getUsername().equals(username)) {
+                return u;
+            }
+        }
+        return user;
+    }
+
     public boolean CheckIfUsernameExists(String username, DataOutputStream out) throws IOException {
         for (User user : users) {
             if (user.getUsername().equals(username)) {

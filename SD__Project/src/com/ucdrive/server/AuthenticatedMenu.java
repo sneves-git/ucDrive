@@ -5,49 +5,21 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Scanner;
 
-import com.ucdrive.server.commands.ChangePassword;
+import com.ucdrive.client.commands.ListClientFiles;
+import com.ucdrive.client.commands.UploadAFile;
+import com.ucdrive.server.commands.*;
+import com.ucdrive.client.commands.ChangeClientDirectory;
+import com.ucdrive.client.commands.ConfigureIpAndPort;
 import com.ucdrive.refactorLater.User;
 import com.ucdrive.refactorLater.Users;
 
 public class AuthenticatedMenu {
-    private Scanner sc;
 
     public AuthenticatedMenu() {
-        sc = new Scanner(System.in);
     }
 
-    /*
-     * private void clientsApplication(User user, Users users) {
-     * int choice;
-     * // choice = authenticatedMenu();
-     * while ((choice = authenticatedMenu()) != 8) {
-     * switch (choice) {
-     * case 1:
-     * changePassword(user);
-     * break;
-     * case 2:
-     * changeClientsDirectory();
-     * break;
-     * case 3:
-     * changeServersDirectory(user, users);
-     * break;
-     * case 4:
-     * listClientFiles();
-     * break;
-     * case 5:
-     * listServerFiles(user);
-     * break;
-     * case 6:
-     * uploadAFile();
-     * break;
-     * case 7:
-     * downloadAFile();
-     * break;
-     * }
-     * }
-     * }
-     */
-    public int authenticatedMenu(User user, Users users, DataInputStream in, DataOutputStream out) throws IOException {
+
+    public void authenticatedMenu(User user, Users users, DataInputStream in, DataOutputStream out) throws IOException {
         int choice = 0;
 
         while (choice != 11) {
@@ -93,44 +65,53 @@ public class AuthenticatedMenu {
                     }
 
                 case 1:
-                    ChangePassword obj = new ChangePassword();
-                    obj.changePassword(user, users, in, out);
+                    ChangePassword obj1 = new ChangePassword();
+                    obj1.changePassword(user, users, in, out);
                     choice = 0;
                     break;
                 case 2:
-                    // changeClientsDirectory();
+                    ChangeClientDirectory obj2 = new ChangeClientDirectory();
+                    // obj2.changeClientsDirectory();
                     choice = 0;
                     break;
                 case 3:
-                    // changeServersDirectory(user, users);
+                    ChangeServerDirectory obj3 = new ChangeServerDirectory();
+                    // obj3.changeDirectory(user, users);
                     choice = 0;
                     break;
                 case 4:
-                    // configureIpAndPort();
+                    ConfigureIpAndPort obj4 = new ConfigureIpAndPort();
+                    // obj4.configureIpAndPort();
                     choice = 0;
                     break;
                 case 5:
+                    CreateNewFolder obj5 = new CreateNewFolder();
                     // createNewFolder();
                     choice = 0;
                     break;
                 case 6:
-                    // deleteFolder();
+                    DeleteFolder obj6 = new DeleteFolder();
+                    // obj6.deleteFolder();
                     choice = 0;
                     break;
                 case 7:
-                    // downloadAFile();
+                    DownloadAFile obj7 = new DownloadAFile();
+                    // obj7.downloadAFile();
                     choice = 0;
                     break;
                 case 8:
-                    // listClientFiles();
+                    ListClientFiles obj8 = new ListClientFiles();
+                    // obj8.listClientFiles();
                     choice = 0;
                     break;
                 case 9:
-                    // listServerFiles(user);
+                    ListServerFiles obj9 = new ListServerFiles();
+                    // obj9.listServerFiles(user);
                     choice = 0;
                     break;
                 case 10:
-                    // uploadAFile();
+                    UploadAFile obj10 = new UploadAFile();
+                    // obj10.uploadAFile();
                     choice = 0;
                     break;
                 case 11:

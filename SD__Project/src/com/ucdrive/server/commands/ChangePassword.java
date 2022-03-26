@@ -25,11 +25,8 @@ public class ChangePassword {
         out.writeUTF("Password changed successfully!");
 
         // Updates user with new password
-        for (User u : users.getUsers()) {
-            if (u.getUsername().equals(user.getUsername())) {
-                u.setPassword(newPassword);
-            }
-        }
+        User u = users.getUserWithGivenUsername(user.getUsername());
+        u.setPassword(newPassword);
 
         // Rewrites to users.txt updated information
         String fileName = "src/com/ucdrive/configs/users.txt";

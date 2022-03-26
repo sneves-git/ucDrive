@@ -104,6 +104,7 @@ class Connection extends Thread {
                         this.user = login.login_(this.users, in, out);
 
                         AuthenticatedMenu authMenu = new AuthenticatedMenu();
+                        authMenu.authenticatedMenu(this.user, this.users, this.in, this.out);
 
                         break;
                     case "changePassword":
