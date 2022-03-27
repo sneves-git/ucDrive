@@ -23,7 +23,6 @@ public class Client {
         String path = "src/com/ucdrive/configs/";
         String fileName = "primary_server_ip_port.txt";
 
-        Writer output;
 
         // Read ip and port info
         try {
@@ -64,7 +63,7 @@ public class Client {
                     try {
                         // 1o passo
                         s = new Socket(ipAndPort.getPrimaryIp(), ipAndPort.getPrimaryCommandPort());
-                        System.out.println("SERVER PORT = " + serverPort);
+                        System.out.println("SERVER PORT = " + ipAndPort.getPrimaryCommandPort());
                         System.out.println("SOCKET=" + s);
 
                         // 2o passo
@@ -82,7 +81,9 @@ public class Client {
 
                         System.out.println(ipAndPort);
                         AuthenticatedMenu authMenu = new AuthenticatedMenu();
-                        authMenu.authenticatedMenu(s, in, out, reader, ipAndPort);
+
+                        choice = authMenu.authenticatedMenu(s, in, out, reader, ipAndPort);
+
 
                         /*
                          * 
@@ -126,7 +127,7 @@ public class Client {
                 case 3:
                     break;
             }
-        } while (choice == 1);
+        } while (choice != 13);
 
     }
 

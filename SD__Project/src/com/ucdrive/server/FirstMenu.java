@@ -18,8 +18,9 @@ public class FirstMenu{
     }
 
     public void firstMenu(Users users, DataInputStream in, DataOutputStream out){
+        int choice = -1;
         try {
-            while (true) {
+            do{
                 // Receives signal that user wants to log in
                 String data = in.readUTF();
                 switch (data) {
@@ -28,7 +29,7 @@ public class FirstMenu{
                         this.user = login.login_(users, in, out);
 
                         AuthenticatedMenu authMenu = new AuthenticatedMenu();
-                        authMenu.authenticatedMenu(this.user, users, in, out);
+                        choice = authMenu.authenticatedMenu(this.user, users, in, out);
 
                         break;
                     default:
@@ -36,7 +37,7 @@ public class FirstMenu{
                 }
 
 
-            }
+            }while(choice != 13);
         } catch (EOFException e) {
             System.out.println("EOF:" + e);
         } catch (IOException e) {

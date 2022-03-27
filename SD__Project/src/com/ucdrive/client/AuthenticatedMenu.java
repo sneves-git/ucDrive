@@ -9,28 +9,28 @@ public class AuthenticatedMenu {
     public AuthenticatedMenu() {
     }
 
-    public void authenticatedMenu(Socket s, DataInputStream in, DataOutputStream out, BufferedReader reader,
+    public int authenticatedMenu(Socket s, DataInputStream in, DataOutputStream out, BufferedReader reader,
             IpAndPort ipAndPort) {
         // Checks if user's input is valid
         int choice = 0;
         try {
             do {
-                // System.out.println("before reading");
+                //System.out.println("before reading");
                 // printing Menu
                 System.out.print(in.readUTF());
-                // System.out.println("after reading");
+                //System.out.println("after reading");
 
                 // Read and send to server choice
                 out.writeUTF(reader.readLine());
-                // System.out.println("after writing");
+                //System.out.println("after writing");
 
                 try {
-                    // System.out.println("before choice: " + choice);
+                    //System.out.println("before choice: " + choice);
 
                     // Read choice back and confirms if choice is invalid
                     choice = Integer.parseInt(in.readUTF());
 
-                    // System.out.println("after choice: " + choice);
+                    //System.out.println("after choice: " + choice);
 
                 } catch (NumberFormatException e) {
                     choice = 0;
@@ -52,16 +52,12 @@ public class AuthenticatedMenu {
                     case 4:
                         ipAndPort.configureIpAndPortAfterLogin(reader);
 
-                        s = new Socket(ipAndPort.getPrimaryIp(), ipAndPort.getPrimaryCommandPort());
-                        in = new DataInputStream(s.getInputStream());
-                        out = new DataOutputStream(s.getOutputStream());
+                        in.close();
+                        out.close();
+                        s.close();
 
-                        out.writeUTF("Configuration finished!");
                         System.out.println(ipAndPort);
-
-                        // obj4.configureIpAndPort();
-                        // que tal metermos um obj configureIpAndPort com as infos, e aqui era só dar
-                        // update
+                        choice = 4;
                         break;
                     case 5:
                         CreateNewClientFolder obj5 = new CreateNewClientFolder();
@@ -87,10 +83,10 @@ public class AuthenticatedMenu {
                         // exit();
                         break;
                 }
-            } while (choice != 13);
+            } while (choice != 13 && choice != 4);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println();
+        return choice;
     }
 }

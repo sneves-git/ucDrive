@@ -16,7 +16,7 @@ public class AuthenticatedMenu {
     public AuthenticatedMenu() {
     }
 
-    public void authenticatedMenu(User user, Users users, DataInputStream in, DataOutputStream out) throws IOException {
+    public int authenticatedMenu(User user, Users users, DataInputStream in, DataOutputStream out) throws IOException {
         int choice = 0;
 
         while (choice != 13) {
@@ -64,12 +64,9 @@ public class AuthenticatedMenu {
 
                     try {
                         choice = Integer.parseInt(in.readUTF());
-                        System.out.println("choice: " + choice);
                         out.writeUTF(String.valueOf(choice));
                     } catch (NumberFormatException e) {
                         choice = -1;
-                        System.out.println("exception choice: " + choice);
-
                         out.writeUTF("Invalid option.");
                     }
                     break;
@@ -90,8 +87,7 @@ public class AuthenticatedMenu {
                     choice = 0;
                     break;
                 case 4:
-                    System.out.println(in.readUTF());
-                    choice = 0;
+                    // Configure IPandPort of client
                     break;
                 case 5:
                     CreateNewClientFolder obj5 = new CreateNewClientFolder();
@@ -138,5 +134,7 @@ public class AuthenticatedMenu {
                     break;
             }
         }
+        return choice;
+
     }
 }

@@ -7,7 +7,7 @@ public class FirstMenu {
     private Scanner sc;
 
     public FirstMenu() {
-        sc = new Scanner(System.in);
+
     }
 
     public int chooseOption() {
@@ -21,8 +21,11 @@ public class FirstMenu {
         int choice = 0;
         try {
             do {
+                sc = new Scanner(System.in);
+
                 if (sc.hasNextInt()) {
                     choice = sc.nextInt();
+
                     if (choice > 0 && choice < 4) {
                         if (sc.hasNextLine()) {
                             sc.nextLine();
@@ -41,6 +44,7 @@ public class FirstMenu {
                         + "\t2 - Login\n"
                         + "\t3 - Exit\n"
                         + "Choice: ");
+                sc.close();
             } while (choice < 1 || choice > 3);
         } catch (Exception e) {
             System.out.println("Login.java in Menu() - An error occurred with scanner.");
@@ -48,10 +52,6 @@ public class FirstMenu {
         }
 
         return choice;
-    }
-
-    public void configureIPandPortServers() {
-
     }
 
     @Override
