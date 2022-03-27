@@ -63,6 +63,10 @@ public class AuthenticatedMenu {
                         CreateNewClientFolder obj5 = new CreateNewClientFolder();
                         obj5.createNewClientFolder(in, out, reader);
                         break;
+                    case 6:
+                        CreateNewServerFolder obj6 = new CreateNewServerFolder();
+                        obj6.createNewServerFolder(in, out, reader);
+                        break;
                     case 7:
                         DeleteClientFolder obj7 = new DeleteClientFolder();
                         // obj7.deleteClientFolder();

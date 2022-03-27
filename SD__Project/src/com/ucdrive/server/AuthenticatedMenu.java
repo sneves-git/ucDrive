@@ -27,8 +27,8 @@ public class AuthenticatedMenu {
                             + "\t2  - Change client's directory\n"
                             + "\t3  - Change server's directory\n"
                             + "\t4  - Configure IP and port of servers\n"
-                            + "\t5  - Create new folder/file in client\n"
-                            + "\t6  - Create new folder/file in server\n"
+                            + "\t5  - Create new folder in client\n"
+                            + "\t6  - Create new folder in server\n"
                             + "\t7  - Delete folder/file in client\n"
                             + "\t8  - Delete folder/file in client\n"
                             + "\t9  - Download a file\n"
@@ -51,8 +51,8 @@ public class AuthenticatedMenu {
                             + "\t2  - Change client's directory\n"
                             + "\t3  - Change server's directory\n"
                             + "\t4  - Configure IP and port of servers\n"
-                            + "\t5  - Create new folder/file in client\n"
-                            + "\t6  - Create new folder/file in server\n"
+                            + "\t5  - Create new folder in client\n"
+                            + "\t6  - Create new folder in server\n"
                             + "\t7  - Delete folder/file in client\n"
                             + "\t8  - Delete folder/file in client\n"
                             + "\t9  - Download a file\n"
@@ -96,7 +96,7 @@ public class AuthenticatedMenu {
                     break;
                 case 6:
                     CreateNewServerFolder obj6 = new CreateNewServerFolder();
-                    // obj6.createNewServerFolder();
+                    obj6.createNewServerFolder(user.getLastSessionServer(), in, out);
                     choice = 0;
                     break;
                 case 7:
