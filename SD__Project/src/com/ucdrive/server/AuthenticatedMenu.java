@@ -4,11 +4,12 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import com.ucdrive.client.commands.*;
 import com.ucdrive.server.commands.*;
+import com.ucdrive.server.commands.ChangeClientDirectory;
 import com.ucdrive.refactorLater.User;
 import com.ucdrive.refactorLater.Users;
 import com.ucdrive.server.commands.ChangePassword;
+import com.ucdrive.server.commands.ChangeServerDirectory;
 
 public class AuthenticatedMenu {
 
@@ -43,6 +44,7 @@ public class AuthenticatedMenu {
                         choice = -1;
                         out.writeUTF("Invalid option.");
                     }
+                    break;
                 case 0:
                     out.writeUTF("Choose one of the following options:\n"
                             + "\t1  - Change password\n"
@@ -62,12 +64,15 @@ public class AuthenticatedMenu {
 
                     try {
                         choice = Integer.parseInt(in.readUTF());
+                        System.out.println("choice: " + choice);
                         out.writeUTF(String.valueOf(choice));
                     } catch (NumberFormatException e) {
                         choice = -1;
+                        System.out.println("exception choice: " + choice);
+
                         out.writeUTF("Invalid option.");
                     }
-
+                    break;
                 case 1:
                     ChangePassword obj1 = new ChangePassword();
                     obj1.changePassword(user, users, in, out);
@@ -75,22 +80,22 @@ public class AuthenticatedMenu {
                     break;
                 case 2:
                     ChangeClientDirectory obj2 = new ChangeClientDirectory();
-                    // obj2.changeClientsDirectory();
+                    System.out.println(user.getClientPath());
+                    obj2.changeClientDirectory(user, users, in, out);
                     choice = 0;
                     break;
                 case 3:
                     ChangeServerDirectory obj3 = new ChangeServerDirectory();
-                    // obj3.changeDirectory(user, users);
+                    obj3.changeServerDirectory(user, users, in, out);
                     choice = 0;
                     break;
                 case 4:
-                    ConfigureIpAndPort obj4 = new ConfigureIpAndPort();
-                    // obj4.configureIpAndPort();
+                    System.out.println(in.readUTF());
                     choice = 0;
                     break;
                 case 5:
                     CreateNewClientFolder obj5 = new CreateNewClientFolder();
-                    // obj5.createNewClientFolder();
+                    obj5.createNewClientFolder(user, users, in, out);
                     choice = 0;
                     break;
                 case 6:
