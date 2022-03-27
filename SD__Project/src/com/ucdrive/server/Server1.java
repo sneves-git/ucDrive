@@ -34,7 +34,7 @@ public class Server1 {
         Path currentRelativePath = Paths.get("");
         String s = currentRelativePath.toAbsolutePath().toString();
 
-        String path = "/src/com/ucdrive/configs/configs_ip_port.txt";
+        String path = "/src/com/ucdrive/configs/primary_server_ip_port.txt";
         String totalPath = Paths.get(s, path).toString();
         File file = new File(totalPath);
 

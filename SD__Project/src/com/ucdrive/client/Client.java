@@ -4,6 +4,8 @@ import com.ucdrive.client.commands.Login;
 import com.ucdrive.client.commands.ConfigureIpAndPort;
 import com.ucdrive.refactorLater.User;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.io.*;
 import java.net.*;
@@ -11,14 +13,16 @@ import java.net.*;
 public class Client {
     private static Socket s = null;
     private static int serverPort = -1;
-    private static String ipAddress = null;
+    private static String primaryIpAddress = null, secondaryIpAddress = null;
+    private static IpAndPort ipAndPort = new IpAndPort();
 
     public static void main(String[] args) {
 
         // Login
         int choice = 0;
         String path = "src/com/ucdrive/configs/";
-        String fileName = "configs_ip_port.txt";
+        String fileName = "primary_server_ip_port.txt";
+
         Writer output;
 
         // Read ip and port info
@@ -27,10 +31,10 @@ public class Client {
             Scanner myReader = new Scanner(myObj);
 
             if (myReader.hasNextLine()) {
-                ipAddress = myReader.nextLine();
+                ipAndPort.setPrimaryIp(myReader.nextLine());
             }
             if (myReader.hasNextLine()) {
-                serverPort = Integer.parseInt(myReader.nextLine());
+                ipAndPort.setPrimaryCommandPort(Integer.parseInt(myReader.nextLine()));
             }
             myReader.close();
         } catch (IOException e1) {
@@ -39,18 +43,27 @@ public class Client {
         }
 
         FirstMenu menu = new FirstMenu();
+
         do {
             choice = menu.chooseOption();
             switch (choice) {
                 case 1:
-                    ConfigureIpAndPort configureIpPort = new ConfigureIpAndPort();
-                    configureIpPort.configureIpAndPort();
+                    try {
+                        System.out.println(ipAndPort);
+
+                        ipAndPort.configureIpAndPortBeforeLogin();
+
+                        System.out.println(ipAndPort);
+
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
 
                     break;
                 case 2:
                     try {
                         // 1o passo
-                        s = new Socket(ipAddress, serverPort);
+                        s = new Socket(ipAndPort.getPrimaryIp(), ipAndPort.getPrimaryCommandPort());
                         System.out.println("SERVER PORT = " + serverPort);
                         System.out.println("SOCKET=" + s);
 
@@ -67,8 +80,9 @@ public class Client {
                         login.login_(in, out, reader);
                         System.out.println("Logged in!");
 
+                        System.out.println(ipAndPort);
                         AuthenticatedMenu authMenu = new AuthenticatedMenu();
-                        authMenu.authenticatedMenu(in, out, reader);
+                        authMenu.authenticatedMenu(s, in, out, reader, ipAndPort);
 
                         /*
                          * 

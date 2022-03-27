@@ -4,7 +4,7 @@ import java.util.*;
 
 // All menus from client, authentication menu, logged in menu, ...
 public class FirstMenu {
-    Scanner sc;
+    private Scanner sc;
 
     public FirstMenu() {
         sc = new Scanner(System.in);

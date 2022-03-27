@@ -4,7 +4,6 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
-import java.util.Scanner;
 
 import com.ucdrive.refactorLater.User;
 import com.ucdrive.refactorLater.Users;
