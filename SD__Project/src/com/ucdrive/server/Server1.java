@@ -93,38 +93,8 @@ class Connection extends Thread {
 
     // =============================
     public void run() {
-        String resposta;
-        try {
-            while (true) {
-                // Receives signal that user wants to log in
-                String data = in.readUTF();
-                switch (data) {
-                    case "login":
-                        Login login = new Login();
-                        this.user = login.login_(this.users, in, out);
-
-                        AuthenticatedMenu authMenu = new AuthenticatedMenu();
-                        authMenu.authenticatedMenu(this.user, this.users, this.in, this.out);
-
-                        break;
-                    case "changePassword":
-                        ChangePassword change = new ChangePassword();
-                        change.changePassword(user, users, in, out);
-
-                }
-
-                /*
-                 * // an echo server
-                 * String data = in.readUTF();
-                 * System.out.println("T[" + thread_number + "] Recebeu: " + data);
-                 * resposta = data.toUpperCase();
-                 * out.writeUTF(resposta);
-                 */
-            }
-        } catch (EOFException e) {
-            System.out.println("EOF:" + e);
-        } catch (IOException e) {
-            System.out.println("IO:" + e);
-        }
+        // First menu from server
+        FirstMenu menu = new FirstMenu();
+        menu.firstMenu(users, in, out);
     }
 }

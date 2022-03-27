@@ -33,6 +33,8 @@ public class ChangePassword {
 
         // Sends password to server
         out.writeUTF(password);
-        System.out.println();
+
+        // Receives ACK
+        System.out.println(in.readUTF());
     }
 }

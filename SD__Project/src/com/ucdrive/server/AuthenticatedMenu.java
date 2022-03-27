@@ -3,26 +3,22 @@ package com.ucdrive.server;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.Scanner;
 
-import com.ucdrive.client.commands.ListClientFiles;
-import com.ucdrive.client.commands.UploadAFile;
+import com.ucdrive.client.commands.*;
 import com.ucdrive.server.commands.*;
-import com.ucdrive.client.commands.ChangeClientDirectory;
-import com.ucdrive.client.commands.ConfigureIpAndPort;
 import com.ucdrive.refactorLater.User;
 import com.ucdrive.refactorLater.Users;
+import com.ucdrive.server.commands.ChangePassword;
 
 public class AuthenticatedMenu {
 
     public AuthenticatedMenu() {
     }
 
-
     public void authenticatedMenu(User user, Users users, DataInputStream in, DataOutputStream out) throws IOException {
         int choice = 0;
 
-        while (choice != 11) {
+        while (choice != 13) {
             switch (choice) {
                 case -1:
                     out.writeUTF("\nInvalid option.\n\n"
@@ -30,18 +26,22 @@ public class AuthenticatedMenu {
                             + "\t2  - Change client's directory\n"
                             + "\t3  - Change server's directory\n"
                             + "\t4  - Configure IP and port of servers\n"
-                            + "\t5  - Create new folder\n"
-                            + "\t6  - Delete folder\n"
-                            + "\t7  - Download a file\n"
-                            + "\t8  - List client files\n"
-                            + "\t9  - List server files\n"
-                            + "\t10 - Upload a file\n"
-                            + "\t11 - Exit\n"
+                            + "\t5  - Create new folder/file in client\n"
+                            + "\t6  - Create new folder/file in server\n"
+                            + "\t7  - Delete folder/file in client\n"
+                            + "\t8  - Delete folder/file in client\n"
+                            + "\t9  - Download a file\n"
+                            + "\t10 - List client files\n"
+                            + "\t11 - List server files\n"
+                            + "\t12 - Upload a file\n"
+                            + "\t13 - Exit\n"
                             + "Choice: ");
                     try {
                         choice = Integer.parseInt(in.readUTF());
+                        out.writeUTF(String.valueOf(choice));
                     } catch (NumberFormatException e) {
                         choice = -1;
+                        out.writeUTF("Invalid option.");
                     }
                 case 0:
                     out.writeUTF("Choose one of the following options:\n"
@@ -49,19 +49,23 @@ public class AuthenticatedMenu {
                             + "\t2  - Change client's directory\n"
                             + "\t3  - Change server's directory\n"
                             + "\t4  - Configure IP and port of servers\n"
-                            + "\t5  - Create new folder\n"
-                            + "\t6  - Delete folder\n"
-                            + "\t7  - Download a file\n"
-                            + "\t8  - List client files\n"
-                            + "\t9  - List server files\n"
-                            + "\t10 - Upload a file\n"
-                            + "\t11 - Exit\n"
+                            + "\t5  - Create new folder/file in client\n"
+                            + "\t6  - Create new folder/file in server\n"
+                            + "\t7  - Delete folder/file in client\n"
+                            + "\t8  - Delete folder/file in client\n"
+                            + "\t9  - Download a file\n"
+                            + "\t10 - List client files\n"
+                            + "\t11 - List server files\n"
+                            + "\t12 - Upload a file\n"
+                            + "\t13 - Exit\n"
                             + "Choice: ");
 
                     try {
                         choice = Integer.parseInt(in.readUTF());
+                        out.writeUTF(String.valueOf(choice));
                     } catch (NumberFormatException e) {
                         choice = -1;
+                        out.writeUTF("Invalid option.");
                     }
 
                 case 1:
@@ -85,36 +89,46 @@ public class AuthenticatedMenu {
                     choice = 0;
                     break;
                 case 5:
-                    CreateNewFolder obj5 = new CreateNewFolder();
-                    // createNewFolder();
+                    CreateNewClientFolder obj5 = new CreateNewClientFolder();
+                    // obj5.createNewClientFolder();
                     choice = 0;
                     break;
                 case 6:
-                    DeleteFolder obj6 = new DeleteFolder();
-                    // obj6.deleteFolder();
+                    CreateNewServerFolder obj6 = new CreateNewServerFolder();
+                    // obj6.createNewServerFolder();
                     choice = 0;
                     break;
                 case 7:
-                    DownloadAFile obj7 = new DownloadAFile();
-                    // obj7.downloadAFile();
+                    DeleteClientFolder obj7 = new DeleteClientFolder();
+                    // obj7.deleteClientFolder();
                     choice = 0;
                     break;
                 case 8:
-                    ListClientFiles obj8 = new ListClientFiles();
-                    // obj8.listClientFiles();
+                    DeleteServerFolder obj8 = new DeleteServerFolder();
+                    // obj8.deleteServerFolder();
                     choice = 0;
                     break;
                 case 9:
-                    ListServerFiles obj9 = new ListServerFiles();
-                    // obj9.listServerFiles(user);
+                    DownloadAFile obj9 = new DownloadAFile();
+                    // obj9.downloadAFile();
                     choice = 0;
                     break;
                 case 10:
-                    UploadAFile obj10 = new UploadAFile();
-                    // obj10.uploadAFile();
+                    ListClientFiles obj10 = new ListClientFiles();
+                    // obj10.listClientFiles();
                     choice = 0;
                     break;
                 case 11:
+                    ListServerFiles obj11 = new ListServerFiles();
+                    // obj11.listServerFiles(user);
+                    choice = 0;
+                    break;
+                case 12:
+                    UploadAFile obj12 = new UploadAFile();
+                    // obj12.uploadAFile();
+                    choice = 0;
+                    break;
+                case 13:
                     // exit();
                     break;
             }

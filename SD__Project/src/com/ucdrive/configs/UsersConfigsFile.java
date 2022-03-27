@@ -47,7 +47,7 @@ public class UsersConfigsFile {
                         + user.getAddress() + "::"
                         + user.getPhoneNumber() + "::" + user.getExpirationDate() + "::" + user.getCCnumber()
                         + "::"
-                        + user.getLastSession()
+                        + user.getLastSessionServer()
                         + "\n");
             }
             output.close();

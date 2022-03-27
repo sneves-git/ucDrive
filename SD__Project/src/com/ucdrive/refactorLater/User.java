@@ -2,6 +2,9 @@ package com.ucdrive.refactorLater;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 
 public class User implements Serializable {
 	private String username,
@@ -11,22 +14,24 @@ public class User implements Serializable {
 			expirationDate,
 			phoneNumber,
 			CCnumber,
-			lastSession;
+			clientPath,
+			lastSessionServer;
 
 	// Constructors
 	public User() {
-		this.username = "";
-		this.password = "";
-		this.department = "";
-		this.address = "";
-		this.expirationDate = "";
-		this.phoneNumber = "";
-		this.CCnumber = "";
-		this.lastSession = "";
+		this.username = null;
+		this.password = null;
+		this.department = null;
+		this.address = null;
+		this.expirationDate = null;
+		this.phoneNumber = null;
+		this.CCnumber = null;
+		this.clientPath = null;
+		this.lastSessionServer = null;
 	}
 
 	public User(String username, String password, String department, String address, String expirationDate,
-			String phoneNumber, String CCnumber, String lastSession) {
+			String phoneNumber, String CCnumber, String lastSessionServer) {
 		this.username = username;
 		this.password = password;
 		this.department = department;
@@ -34,14 +39,36 @@ public class User implements Serializable {
 		this.expirationDate = expirationDate;
 		this.phoneNumber = phoneNumber;
 		this.CCnumber = CCnumber;
-		this.lastSession = lastSession;
+		this.lastSessionServer = lastSessionServer;
+
+		Path currentRelativePath = Paths.get("");
+		String s = currentRelativePath.toAbsolutePath().toString();
+		this.clientPath = s;
 	}
 
 	// functions
-	public ArrayList<String> getUserFolders(String path) {
+	public ArrayList<String> getUserFoldersInServer(String path) {
 		ArrayList<String> folders = new ArrayList<String>();
 
-		File dir = new File(path + lastSession);
+		File dir = new File(path + lastSessionServer);
+		File[] files = dir.listFiles();
+
+		if (files != null && files.length > 0) {
+			for (File file : files) {
+
+				// Check if the file is a directory
+				if (file.isDirectory()) {
+					folders.add(file.getName());
+				}
+			}
+		}
+		return folders;
+	}
+
+	public ArrayList<String> getUserFoldersInClient() {
+		ArrayList<String> folders = new ArrayList<String>();
+
+		File dir = new File(clientPath);
 		File[] files = dir.listFiles();
 
 		if (files != null && files.length > 0) {
@@ -77,7 +104,7 @@ public class User implements Serializable {
 		return department;
 	}
 
-	public void setDepartament(String newDepartment) {
+	public void setDepartment(String newDepartment) {
 		this.department = newDepartment;
 	}
 
@@ -113,19 +140,29 @@ public class User implements Serializable {
 		this.phoneNumber = newCCnumber;
 	}
 
-	public String getLastSession() {
-		return lastSession;
+	public String getClientPath() {
+		return clientPath;
 	}
 
-	public void setLastSession(String newLastSession) {
-		this.lastSession = newLastSession;
+	public void setClientPath(String newClientPath) {
+		this.clientPath = newClientPath;
+	}
+
+	public String getLastSessionServer() {
+		return lastSessionServer;
+	}
+
+	public void setLastSessionServer(String lastSessionServer) {
+		this.lastSessionServer = lastSessionServer;
 	}
 
 	// toString method
 	public String toString() {
 		return "Username: " + username + "\tPassword: " + password +
 				"\tDepartment: " + department + "\tAddress: " + address + "\tCC Expiration Date:" + expirationDate
-				+ "\tPhone Number: " + phoneNumber + "\t CC Number: " + CCnumber + "\tLast Session: " + lastSession
+				+ "\tPhone Number: " + phoneNumber + "\t CC Number: " + CCnumber + "\t Client Path: " + clientPath
+				+ "\tLast Session Server: "
+				+ lastSessionServer
 				+ "\n";
 	}
 

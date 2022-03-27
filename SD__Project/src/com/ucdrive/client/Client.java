@@ -45,6 +45,7 @@ public class Client {
                 case 1:
                     ConfigureIpAndPort configureIpPort = new ConfigureIpAndPort();
                     configureIpPort.configureIpAndPort();
+
                     break;
                 case 2:
                     try {
@@ -68,10 +69,6 @@ public class Client {
 
                         AuthenticatedMenu authMenu = new AuthenticatedMenu();
                         authMenu.authenticatedMenu(in, out, reader);
-
-                        String data = in.readUTF();
-                        String choice_ = reader.readLine();
-                        out.writeUTF(choice_);
 
                         /*
                          * 

@@ -46,19 +46,6 @@ public class FirstMenu {
             System.out.println("Login.java in Menu() - An error occurred with scanner.");
             e.printStackTrace();
         }
-        /*
-         *
-         * switch (choice) {
-         * case 1:
-         * configureIPandPortServers();
-         * break;
-         * case 2:
-         * login_();
-         * break;
-         * default:
-         * Exit();
-         * }
-         */
 
         return choice;
     }
