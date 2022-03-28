@@ -9,12 +9,12 @@ import com.ucdrive.refactorLater.*;
 
 public class DownloadHelper {
 	public DownloadHelper() {}
-	public String downloadHelper(String clientPath, String serverPath,  DataInputStream in, DataOutputStream out){
+	public String downloadHelper(String clientPath, String serverPath,  DataInputStream in, DataOutputStream out, String server){
 		ServerHelperClass shc = new ServerHelperClass();
 		ArrayList<String> files = new ArrayList<>();
 		String s = "";
 		Path currentRelativePath = Paths.get("");
-		String path = currentRelativePath.toAbsolutePath().toString() + "/src/com/ucdrive/server/" + serverPath;
+		String path = currentRelativePath.toAbsolutePath().toString() + "/src/com/ucdrive/server/"+ server + "/" + serverPath;
 		
 		
 		try {

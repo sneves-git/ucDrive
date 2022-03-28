@@ -8,10 +8,10 @@ public class CreateNewServerFolder {
     public CreateNewServerFolder() {
     }
 
-    public void createNewServerFolder(String serverPath, DataInputStream in, DataOutputStream out) throws IOException {
+    public void createNewServerFolder(String serverPath, DataInputStream in, DataOutputStream out, String server) throws IOException {
         System.out.println("--------- Create new server Folder --------");
         Path currentRelativePath = Paths.get("");
-        String path = currentRelativePath.toAbsolutePath().toString() + "/src/com/ucdrive/server/" + serverPath;
+        String path = currentRelativePath.toAbsolutePath().toString() + "/src/com/ucdrive/server/" + server +"/"+ serverPath;
 
         // Write to client current path and wait for folder to create
         out.writeUTF(serverPath + ">");

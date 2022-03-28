@@ -6,10 +6,10 @@ import java.util.*;
 public class DeleteServerFolderOrFile {
     public DeleteServerFolderOrFile(){}
 
-    public void deleteServerFolder(String serverPath, DataInputStream in, DataOutputStream out) throws IOException  {
+    public void deleteServerFolder(String serverPath, DataInputStream in, DataOutputStream out, String server) throws IOException  {
         System.out.println("--------- Delete server Folder/File --------");
         Path currentRelativePath = Paths.get("");
-        String path = currentRelativePath.toAbsolutePath().toString() + "/src/com/ucdrive/server/" + serverPath;
+        String path = currentRelativePath.toAbsolutePath().toString() + "/src/com/ucdrive/server/"+ server + "/" + serverPath;
 
         // Write to client current path and wait for folder to create
         out.writeUTF(serverPath + ">");

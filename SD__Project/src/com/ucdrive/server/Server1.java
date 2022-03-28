@@ -57,9 +57,7 @@ public class Server1 {
             System.out.println("Listen:" + e.getMessage());
             e.printStackTrace();
         }
-
-
-    
+    }
 }
 
 class Connection extends Thread {
@@ -92,3 +90,4 @@ class Connection extends Thread {
         menu.firstMenu(users, in, out, server);
     }
 }
+

@@ -9,14 +9,15 @@ public class DownloadAFile extends Thread {
     private Socket clientSocket;
     private String serverPath;
     private int buffsize;
-    private String choice;
+    private String choice, server;
 
-    public DownloadAFile(Socket aClientSocket, String serverPath, String choice) {
+    public DownloadAFile(Socket aClientSocket, String serverPath, String server, String choice) {
         try {
             this.buffsize = 1024;
             this.choice = choice;
             this.clientSocket = aClientSocket;
             this.serverPath = serverPath;
+            this.server = server;
 
             this.out = new DataOutputStream(clientSocket.getOutputStream());
 
@@ -45,7 +46,7 @@ public class DownloadAFile extends Thread {
          */
 
         Path currentRelativePath = Paths.get("");
-        String path = currentRelativePath.toAbsolutePath().toString() + "/src/com/ucdrive/server/" + serverPath;
+        String path = currentRelativePath.toAbsolutePath().toString() + "/src/com/ucdrive/server/" + server + "/" + serverPath;
         try {
             int nread;
             byte[] buf = new byte[buffsize];

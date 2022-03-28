@@ -11,10 +11,10 @@ import java.nio.file.Paths;
 public class UploadHelper {
 	public UploadHelper(){}
 
-	public void uploadHelper(String clientPath, String serverPath, DataInputStream in, DataOutputStream out, Socket sFile){
+	public void uploadHelper(String clientPath, String serverPath, String server, DataInputStream in, DataOutputStream out, Socket sFile){
 
 		Path currentRelativePath = Paths.get("");
-		String path = currentRelativePath.toAbsolutePath().toString() + "/src/com/ucdrive/server/" + serverPath;
+		String path = currentRelativePath.toAbsolutePath().toString() + "/src/com/ucdrive/server/"+ server + "/" + serverPath;
 
 
 		try {

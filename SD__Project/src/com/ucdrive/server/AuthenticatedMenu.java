@@ -92,7 +92,7 @@ public class AuthenticatedMenu {
                     break;
                 case 6:
                     CreateNewServerFolder obj6 = new CreateNewServerFolder();
-                    obj6.createNewServerFolder(user.getLastSessionServer(), in, out);
+                    obj6.createNewServerFolder(user.getLastSessionServer(), in, out, server);
                     choice = 0;
                     break;
                 case 7:
@@ -102,7 +102,7 @@ public class AuthenticatedMenu {
                     break;
                 case 8:
                     DeleteServerFolderOrFile obj8 = new DeleteServerFolderOrFile();
-                    obj8.deleteServerFolder(user.getLastSessionServer(), in, out);
+                    obj8.deleteServerFolder(user.getLastSessionServer(), in, out, server);
                     choice = 0;
                     break;
                 case 9:
@@ -119,10 +119,10 @@ public class AuthenticatedMenu {
                         System.out.println("CLIENT_SOCKET (created at accept())=" + clientSocket_);
 
                         DownloadHelper dh = new DownloadHelper();
-                        String fileName = dh.downloadHelper(user.getClientPath(), user.getLastSessionServer(), in, out);
+                        String fileName = dh.downloadHelper(user.getClientPath(), user.getLastSessionServer(), in, out, server);
 
                         if(!fileName.equals("File does not exist!")){
-                            new DownloadAFile(clientSocket_, user.getLastSessionServer(), fileName);
+                            new DownloadAFile(clientSocket_, user.getLastSessionServer(), server, fileName);
                         }
 
                     } catch (Exception e) {
@@ -155,7 +155,7 @@ public class AuthenticatedMenu {
                         System.out.println("CLIENT_SOCKET (created at accept())=" + clientSocket_);
 
                         UploadHelper helper = new UploadHelper();
-                        helper.uploadHelper(user.getClientPath(), user.getLastSessionServer(), in, out, clientSocket_);
+                        helper.uploadHelper(user.getClientPath(), user.getLastSessionServer(), server, in, out, clientSocket_);
                     } catch (Exception e) {
                         System.out.println("Error with server socket: " + e);
                     }
