@@ -10,13 +10,11 @@ public class ListServerFiles {
 
     public void listServerFiles(DataInputStream in) throws IOException {
         System.out.println("------------ List Server Files ----------");
-
         String aux = in.readUTF();
         while (!aux.equals("done")) {
             System.out.println(aux);
             aux = in.readUTF();
         }
-
         System.out.println("-----------------------------------------");
 
     }

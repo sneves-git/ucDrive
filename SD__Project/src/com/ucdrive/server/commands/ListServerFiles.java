@@ -15,6 +15,6 @@ public class ListServerFiles {
         Path currentRelativePath = Paths.get("");
         String path = currentRelativePath.toAbsolutePath().toString() + "/src/com/ucdrive/server/" + serverPath;
 
-        obj.listFiles(out, path, false);
+        obj.listFoldersAndFiles(out, path, false);
     }
 }

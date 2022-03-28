@@ -106,20 +106,29 @@ public class AuthenticatedMenu {
                     choice = 0;
                     break;
                 case 9:
-                    int filePort = Integer.parseInt(in.readUTF());
-                    System.out.println("A Escuta no Porto " + filePort);
-                    try (ServerSocket folderSocket = new ServerSocket(filePort)) {
+                    try (ServerSocket folderSocket = new ServerSocket(0)) {
+                        int filePort = folderSocket.getLocalPort();
+                        System.out.println("A Escuta no Porto " + filePort);
+
+                        out.writeUTF(Integer.toString(filePort));
+
                         System.out.println("LISTEN SOCKET=" + folderSocket);
-                        
+
                         Socket clientSocket_ = folderSocket.accept(); // BLOQUEANTE
 
                         System.out.println("CLIENT_SOCKET (created at accept())=" + clientSocket_);
-                        new DownloadAFile(clientSocket_);
-                        
+
+                        DownloadHelper dh = new DownloadHelper();
+                        String fileName = dh.downloadHelper(user.getClientPath(), user.getLastSessionServer(), in, out);
+
+                        if(!fileName.equals("File does not exist!")){
+                            new DownloadAFile(clientSocket_, user.getLastSessionServer(), fileName);
+                        }
+
                     } catch (Exception e) {
                         System.out.println("Error with server socket: " + e);
                     }
-                    
+
                     choice = 0;
                     break;
                 case 10:

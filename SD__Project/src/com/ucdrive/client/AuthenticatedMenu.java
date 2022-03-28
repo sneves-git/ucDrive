@@ -9,8 +9,9 @@ public class AuthenticatedMenu {
     public AuthenticatedMenu() {
     }
 
-    public int authenticatedMenu(Socket s, Socket sFile, DataInputStream in, DataOutputStream out, BufferedReader reader,
-            IpAndPort ipAndPort) throws IOException{
+    public int authenticatedMenu(Socket s, Socket sFile, DataInputStream in, DataOutputStream out,
+            BufferedReader reader,
+            IpAndPort ipAndPort) throws IOException {
         // Checks if user's input is valid
         int choice = 0;
         try {
@@ -76,11 +77,16 @@ public class AuthenticatedMenu {
                         obj8.deleteServerFolder(in, out, reader);
                         break;
                     case 9:
-                        ipAndPort.setPrimaryFilePort(0);
-                        out.writeUTF(String.valueOf(ipAndPort.getPrimaryFilePort())); // Sends port number to server
-                        in.readUTF(); // <-- signals that client can establish connection
+                        // Receives new port to use for download
+                        ipAndPort.setPrimaryFilePort(Integer.parseInt(in.readUTF()));
+
+                        // Establishes connection with server for download
                         sFile = new Socket(ipAndPort.getPrimaryIp(), ipAndPort.getPrimaryFilePort());
-                        new DownloadAFile(sFile, in, out, reader);
+
+                        // Asks user which file he wants to download
+                        DownloadHelper helper = new DownloadHelper();
+                        helper.downloadHelper(in, out, reader, sFile);
+                        
                         break;
                     case 10:
                         ListClientFiles obj10 = new ListClientFiles();

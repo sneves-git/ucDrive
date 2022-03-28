@@ -2,23 +2,21 @@ package com.ucdrive.client.commands;
 
 import java.io.*;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 
 public class DownloadAFile extends Thread {
-    DataInputStream inPreviousSocket, in;
-    DataOutputStream outPreviousSocket, out;
-    BufferedReader readerPreviousSocket, reader;
-    Socket socket;
+    private DataInputStream in;
+    private Socket socket;
+    private int buffsize;
+    private String clientPath, fileName;
 
-    public DownloadAFile(Socket aClientSocket, DataInputStream inPreviousSocket, DataOutputStream outPreviousSocket,
-            BufferedReader readerPreviousSocket) {
+    public DownloadAFile(Socket aClientSocket, String clientPath, String fileName) {
         try {
+            this.buffsize = 8192;
+            this.clientPath = clientPath;
+            this.fileName = fileName;
             this.socket = aClientSocket;
-            this.inPreviousSocket = in;
-            this.outPreviousSocket = out;
-            this.readerPreviousSocket = readerPreviousSocket;
-
-            in = new DataInputStream(socket.getInputStream());
-            out = new DataOutputStream(socket.getOutputStream());
+            this.in = new DataInputStream(socket.getInputStream());
 
             this.start();
         } catch (IOException e) {
@@ -40,36 +38,23 @@ public class DownloadAFile extends Thread {
          * 9. envio a escolha
          * 10. recebo ficheiro em chunks ate à mensagem do terminei
          */
-        String fileChoice = "", clientPath = "", choice = "";
 
         try {
-            clientPath = in.readUTF();
-            System.out.println(in.readUTF());
-            choice = reader.readLine();
-            out.writeUTF(choice);
-            fileChoice = in.readUTF();
+            FileOutputStream fos = new FileOutputStream(clientPath + "/" + fileName);
+            byte[] buf = new byte[buffsize];
+            
+            String s;
+
+            do{
+                buf = in.readAllBytes();
+                fos.write(buf);
+                
+            }while((s = new String(buf, StandardCharsets.UTF_8)).equals("Finished downloading file!"));
+            
+            fos.close();
+           
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        try {
-            char[] myBuffer = new char[1024];
-            int bytesRead = 0;
-            BufferedReader in = new BufferedReader(new FileReader(clientPath + "/" + fileChoice));
-            StringBuilder line = new StringBuilder();
-            while ((bytesRead = in.read(myBuffer, 0, 1024)) != -1) {
-                for (int i = 0; i < myBuffer.length; i++) {
-                    line.append(myBuffer[i]);
-                }
-                line.delete(0, line.toString().length());
-            }
-            in.close();
-        } catch (FileNotFoundException fnfE) {
-            // file not found, handle case
-        } catch (IOException ioE) {
-            // problem reading, handle case
-        }
-
     }
-
 }

@@ -10,7 +10,7 @@ public class ListClientFiles {
         System.out.println("------------ List Client Files ----------");
         String ClientPath = in.readUTF();
         ServerHelperClass helper = new ServerHelperClass();
-        helper.listFiles(out, ClientPath,true);
+        helper.listFoldersAndFiles(out, ClientPath,true);
         System.out.println("-----------------------------------------");
     }
 }
