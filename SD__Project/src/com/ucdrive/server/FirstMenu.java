@@ -17,7 +17,7 @@ public class FirstMenu{
         this.user = null;
     }
 
-    public void firstMenu(Users users, DataInputStream in, DataOutputStream out){
+    public void firstMenu(Users users, DataInputStream in, DataOutputStream out, String server){
         int choice = -1;
         try {
             do{
@@ -29,7 +29,7 @@ public class FirstMenu{
                         this.user = login.login_(users, in, out);
 
                         AuthenticatedMenu authMenu = new AuthenticatedMenu();
-                        choice = authMenu.authenticatedMenu(this.user, users, in, out);
+                        choice = authMenu.authenticatedMenu(this.user, users, in, out, server);
 
                         break;
                     default:

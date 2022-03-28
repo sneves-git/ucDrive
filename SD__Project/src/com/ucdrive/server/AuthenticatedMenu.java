@@ -12,7 +12,7 @@ public class AuthenticatedMenu {
     public AuthenticatedMenu() {
     }
 
-    public int authenticatedMenu(User user, Users users, DataInputStream in, DataOutputStream out) throws IOException {
+    public int authenticatedMenu(User user, Users users, DataInputStream in, DataOutputStream out, String server) throws IOException {
         int choice = 0;
 
         while (choice != 13) {
@@ -79,7 +79,7 @@ public class AuthenticatedMenu {
                     break;
                 case 3:
                     ChangeServerDirectory obj3 = new ChangeServerDirectory();
-                    obj3.changeServerDirectory(user, users, in, out);
+                    obj3.changeServerDirectory(user, users, in, out, server);
                     choice = 0;
                     break;
                 case 4:
@@ -138,7 +138,7 @@ public class AuthenticatedMenu {
                     break;
                 case 11:
                     ListServerFiles obj11 = new ListServerFiles();
-                    obj11.listServerFiles(user.getLastSessionServer(), in, out);
+                    obj11.listServerFiles(user.getLastSessionServer(), in, out, server);
                     choice = 0;
                     break;
                 case 12:

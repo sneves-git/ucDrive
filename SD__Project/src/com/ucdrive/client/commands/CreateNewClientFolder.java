@@ -3,8 +3,6 @@ package com.ucdrive.client.commands;
 import java.io.*;
 import java.util.*;
 
-import com.ucdrive.client.Client;
-
 public class CreateNewClientFolder {
     public CreateNewClientFolder() {
     }

@@ -13,7 +13,7 @@ public class ChangeServerDirectory {
     public ChangeServerDirectory() {
     }
 
-    public void changeServerDirectory(User user, Users users, DataInputStream in, DataOutputStream out)
+    public void changeServerDirectory(User user, Users users, DataInputStream in, DataOutputStream out, String server)
             throws IOException {
         out.writeUTF(user.getLastSessionServer() + "> ");
         String command = in.readUTF();
@@ -67,7 +67,7 @@ public class ChangeServerDirectory {
                 return;
             }
         }
-        ArrayList<String> clientFolders = getUserFoldersInClient(user.getLastSessionServer(), user.getUsername());
+        ArrayList<String> clientFolders = getUserFoldersInClient(user.getLastSessionServer(), user.getUsername(), server);
         for (String folder : clientFolders) {
             if (folder.equals(aux_list.get(0))) {
                 newPath = user.getLastSessionServer() + "/"+folder ;
@@ -90,13 +90,13 @@ public class ChangeServerDirectory {
         return;
     }
 
-    public ArrayList<String> getUserFoldersInClient(String clientPath, String username) {
+    public ArrayList<String> getUserFoldersInClient(String clientPath, String username, String server) {
         ArrayList<String> folders = new ArrayList<String>();
 
         Path currentRelativePath = Paths.get("");
         String s = currentRelativePath.toAbsolutePath().toString();
 
-        String path = "/src/com/ucdrive/server/Home/" + username;
+        String path = "/src/com/ucdrive/server/"+ server + "/Home/" + username;
         String totalPath = Paths.get(s, path).toString();
         System.out.println(totalPath);
 

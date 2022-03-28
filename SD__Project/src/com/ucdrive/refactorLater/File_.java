@@ -1,8 +1,5 @@
 package com.ucdrive.refactorLater;
 
-import java.util.*;
-import java.io.*;
-
 public class File_ extends Folder {
 
 	public File_() {

@@ -9,10 +9,11 @@ public class AuthenticatedMenu {
     public AuthenticatedMenu() {
     }
 
-    public int authenticatedMenu(Socket s, Socket sFile, DataInputStream in, DataOutputStream out,
+    public int authenticatedMenu(Socket s, DataInputStream in, DataOutputStream out,
             BufferedReader reader,
             IpAndPort ipAndPort) throws IOException {
         // Checks if user's input is valid
+        Socket sFile;
         int choice = 0;
         try {
             do {
@@ -41,7 +42,7 @@ public class AuthenticatedMenu {
                     case 1:
                         ChangePassword obj1 = new ChangePassword();
                         obj1.changePassword(in, out, reader);
-                        return 0;
+                        break;
 
                     case 2:
                         ChangeClientDirectory obj2 = new ChangeClientDirectory();
@@ -108,10 +109,9 @@ public class AuthenticatedMenu {
                         obj12.uploadHelper(in, out, reader, sFile);
                         break;
                     case 13:
-                        // exit();
                         break;
                 }
-            } while (choice != 13 && choice != 4);
+            } while (choice != 13 && choice != 4 && choice != 1);
         } catch (Exception e) {
             e.printStackTrace();
         }

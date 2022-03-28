@@ -4,7 +4,6 @@ import com.ucdrive.configs.UsersConfigsFile;
 import com.ucdrive.refactorLater.User;
 import com.ucdrive.refactorLater.Users;
 
-import java.util.*;
 import java.io.*;
 
 public class ChangePassword {

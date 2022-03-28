@@ -1,12 +1,9 @@
 package com.ucdrive.client.commands;
 
-import com.ucdrive.refactorLater.User;
-
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.Scanner;
 
 public class Login {
     private String username, password;

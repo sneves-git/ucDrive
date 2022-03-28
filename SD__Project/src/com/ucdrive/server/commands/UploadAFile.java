@@ -32,7 +32,6 @@ public class UploadAFile extends Thread {
 			FileOutputStream fos = new FileOutputStream(ServerPath + "/" + fileName);
 			byte[] buf = new byte[buffsize];
 
-			String s, a;
 
 			int length;
 			while((length = in.read(buf, 0, buf.length)) >0){

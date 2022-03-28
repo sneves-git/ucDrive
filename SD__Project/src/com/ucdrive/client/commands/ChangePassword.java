@@ -3,11 +3,10 @@ package com.ucdrive.client.commands;
 import java.io.*;
 
 public class ChangePassword {
-    private String password, newPassword;
+    private String password;
 
     public ChangePassword() {
         password = null;
-        newPassword = null;
     }
 
     public void changePassword(DataInputStream in, DataOutputStream out, BufferedReader reader) throws IOException {

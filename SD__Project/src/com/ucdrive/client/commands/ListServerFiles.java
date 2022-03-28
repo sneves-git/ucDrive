@@ -1,7 +1,5 @@
 package com.ucdrive.client.commands;
 
-import com.ucdrive.refactorLater.ServerHelperClass;
-
 import java.io.*;
 
 public class ListServerFiles {

@@ -4,7 +4,6 @@ import java.io.*;
 import java.util.ArrayList;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
 
 public class User implements Serializable {
 	private String username,

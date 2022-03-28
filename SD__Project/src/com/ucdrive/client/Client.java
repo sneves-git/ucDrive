@@ -1,19 +1,13 @@
 package com.ucdrive.client;
 
 import com.ucdrive.client.commands.Login;
-import com.ucdrive.client.commands.ConfigureIpAndPort;
-import com.ucdrive.refactorLater.User;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 import java.io.*;
 import java.net.*;
 
 public class Client {
-    private static Socket sCommand = null, sFile = null;
-    private static int serverPort = -1;
-    private static String primaryIpAddress = null, secondaryIpAddress = null;
+    private static Socket sCommand = null;
     private static IpAndPort ipAndPort = new IpAndPort();
 
     public static void main(String[] args) {
@@ -69,7 +63,6 @@ public class Client {
                         DataInputStream in = new DataInputStream(sCommand.getInputStream());
                         DataOutputStream out = new DataOutputStream(sCommand.getOutputStream());
 
-                        String texto = "";
                         InputStreamReader input = new InputStreamReader(System.in);
                         BufferedReader reader = new BufferedReader(input);
 
@@ -81,31 +74,7 @@ public class Client {
                         System.out.println(ipAndPort);
                         AuthenticatedMenu authMenu = new AuthenticatedMenu();
 
-                        choice = authMenu.authenticatedMenu(sCommand, sFile, in, out, reader, ipAndPort);
-
-                        /*
-                         * 
-                         * System.out.println("Introduza texto:");
-                         * 
-                         * // 3o passo
-                         * while (true) {
-                         * // READ STRING FROM KEYBOARD
-                         * try {
-                         * texto = reader.readLine();
-                         * } catch (Exception e) {
-                         * }
-                         * 
-                         * // WRITE INTO THE SOCKET
-                         * out.writeUTF(texto);
-                         * 
-                         * // READ FROM SOCKET
-                         * String data = in.readUTF();
-                         * 
-                         * // DISPLAY WHAT WAS READ
-                         * System.out.println("Received: " + data);
-                         * }
-                         * 
-                         */
+                        choice = authMenu.authenticatedMenu(sCommand,  in, out, reader, ipAndPort);
 
                     } catch (UnknownHostException e) {
                         System.out.println("Sock:" + e.getMessage());
@@ -126,7 +95,5 @@ public class Client {
                     break;
             }
         } while (choice != 3);
-
     }
-
 }

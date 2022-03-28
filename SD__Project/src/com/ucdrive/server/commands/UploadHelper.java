@@ -1,6 +1,5 @@
 package com.ucdrive.server.commands;
 
-import com.ucdrive.refactorLater.ServerHelperClass;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -8,11 +7,8 @@ import java.io.IOException;
 import java.net.Socket;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 
 public class UploadHelper {
-
-
 	public UploadHelper(){}
 
 	public void uploadHelper(String clientPath, String serverPath, DataInputStream in, DataOutputStream out, Socket sFile){

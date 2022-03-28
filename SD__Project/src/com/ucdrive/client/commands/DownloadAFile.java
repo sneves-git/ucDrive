@@ -2,7 +2,6 @@ package com.ucdrive.client.commands;
 
 import java.io.*;
 import java.net.Socket;
-import java.nio.charset.StandardCharsets;
 
 public class DownloadAFile extends Thread {
     private DataInputStream in;
@@ -43,8 +42,6 @@ public class DownloadAFile extends Thread {
             FileOutputStream fos = new FileOutputStream(clientPath + "/" + fileName);
             byte[] buf = new byte[buffsize];
             
-            String s, a;
-
             int length;
             while((length = in.read(buf, 0, buf.length)) >0){
                 fos.write(buf, 0, length);

@@ -3,14 +3,7 @@ package com.ucdrive.server.commands;
 import com.ucdrive.refactorLater.Users;
 import com.ucdrive.refactorLater.User;
 
-import java.util.*;
 import java.io.*;
-
-/*
-* do {
-
-        } while (!CheckIfUsernameExists(username) && !CheckIfPasswordIsCorrect(username, password));
-* */
 
 public class Login {
 	private String username, password;

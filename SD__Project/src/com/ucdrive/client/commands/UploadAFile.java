@@ -1,6 +1,5 @@
 package com.ucdrive.client.commands;
 
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -37,7 +36,6 @@ public class UploadAFile extends Thread {
                     nread = fis.read(buf);
                     if (nread > 0) {
                         out.write(buf, 0, nread);
-
                     }
                 } while (nread > -1);
             } catch (IOException e) {

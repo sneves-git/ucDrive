@@ -1,11 +1,6 @@
 package com.ucdrive.server;
 
-import com.ucdrive.server.commands.Login;
-import com.ucdrive.server.commands.ChangePassword;
-
 import com.ucdrive.configs.UsersConfigsFile;
-import com.ucdrive.refactorLater.Folder;
-import com.ucdrive.refactorLater.ServerHelperClass;
 import com.ucdrive.refactorLater.User;
 import com.ucdrive.refactorLater.Users;
 
@@ -22,11 +17,9 @@ public class Server1 {
         UsersConfigsFile usersConfigsFile = new UsersConfigsFile();
         usersConfigsFile.readUsersInfo(users);
 
-        ServerHelperClass helper = new ServerHelperClass();
-        String startDir = ".";
-
+        String server = "server1";
         ServerFoldersCheck check = new ServerFoldersCheck();
-        check.checkingFolders(users.getUsers());
+        check.checkingFolders(users.getUsers(), server);
 
         Path currentRelativePath = Paths.get("");
         String s = currentRelativePath.toAbsolutePath().toString();
@@ -54,17 +47,19 @@ public class Server1 {
 
                     System.out.println("CLIENT_SOCKET (created at accept())=" + clientSocket);
                     numero++;
-                    new Connection(users, clientSocket, numero);
+                    new Connection(users, clientSocket, numero, server);
                 }
             } catch (Exception e) {
                 System.out.println("Error with server socket: " + e);
             }
+            sc.close();
         } catch (IOException e) {
             System.out.println("Listen:" + e.getMessage());
             e.printStackTrace();
         }
 
-    }
+
+    
 }
 
 class Connection extends Thread {
@@ -74,10 +69,12 @@ class Connection extends Thread {
     int thread_number;
     Users users;
     User user;
+    String server;
 
-    public Connection(Users users, Socket aClientSocket, int numero) {
+    public Connection(Users users, Socket aClientSocket, int numero, String server) {
         thread_number = numero;
         this.users = users;
+        this.server = server;
         try {
             clientSocket = aClientSocket;
             in = new DataInputStream(clientSocket.getInputStream());
@@ -92,6 +89,6 @@ class Connection extends Thread {
     public void run() {
         // First menu from server
         FirstMenu menu = new FirstMenu();
-        menu.firstMenu(users, in, out);
+        menu.firstMenu(users, in, out, server);
     }
 }
