@@ -4,16 +4,13 @@ import java.util.*;
 import java.io.*;
 
 public class ServerHelperClass {
-	ArrayList<String> directories;
 
 	public ServerHelperClass() {
-		directories = new ArrayList<String>();
 	}
 
 	// Function to search for all folders and files within a certain starting
 	// directory
-	// Stores all the directories and folders
-	public void listFiles(Folder directory, String startDir) {
+	public void listFiles(DataOutputStream out, String startDir, boolean client) throws IOException {
 
 		File dir = new File(startDir);
 		File[] files = dir.listFiles();
@@ -22,20 +19,23 @@ public class ServerHelperClass {
 			for (File file : files) {
 				// Check if the file is a directory
 				if (file.isDirectory()) {
-					// We will not print the directory name, just use it as a new
-					// starting point to list files from
-					Folder new_folder = new Folder(file.getPath());
-					directory.addFolder(new_folder);
-					listFiles(new_folder, file.getPath());
+					if (client) {
+						System.out.println("[Folder] " + file.getName());
+					} else {
+						out.writeUTF("[Folder] " + file.getName());
+					}
+					// listFiles(new_folder, file.getPath()); <-- recursive step
 				} else {
-					// We can use .length() to get the file size
-
-					File_ f = new File_(file.getPath());
-					directory.addFolder(f);
-					// directories.add(file.getName());
-					// System.out.println(file.getName() + " (size in bytes: " + file.length()+")");
+					if (client) {
+						System.out.println("[File] " + file.getName());
+					} else {
+						out.writeUTF("[File] " + file.getName());
+					}
 				}
 			}
+		}
+		if (!client) {
+			out.writeUTF("done");
 		}
 	}
 

@@ -1,15 +1,11 @@
 package com.ucdrive.server;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-
 import com.ucdrive.server.commands.*;
-import com.ucdrive.server.commands.ChangeClientDirectory;
-import com.ucdrive.refactorLater.User;
-import com.ucdrive.refactorLater.Users;
-import com.ucdrive.server.commands.ChangePassword;
-import com.ucdrive.server.commands.ChangeServerDirectory;
+import com.ucdrive.refactorLater.*;
+
+import java.io.*;
+import java.net.ServerSocket;
+import java.net.Socket;
 
 public class AuthenticatedMenu {
 
@@ -30,7 +26,7 @@ public class AuthenticatedMenu {
                             + "\t5  - Create new folder in client\n"
                             + "\t6  - Create new folder in server\n"
                             + "\t7  - Delete folder/file in client\n"
-                            + "\t8  - Delete folder/file in client\n"
+                            + "\t8  - Delete folder/file in server\n"
                             + "\t9  - Download a file\n"
                             + "\t10 - List client files\n"
                             + "\t11 - List server files\n"
@@ -54,7 +50,7 @@ public class AuthenticatedMenu {
                             + "\t5  - Create new folder in client\n"
                             + "\t6  - Create new folder in server\n"
                             + "\t7  - Delete folder/file in client\n"
-                            + "\t8  - Delete folder/file in client\n"
+                            + "\t8  - Delete folder/file in Server\n"
                             + "\t9  - Download a file\n"
                             + "\t10 - List client files\n"
                             + "\t11 - List server files\n"
@@ -91,7 +87,7 @@ public class AuthenticatedMenu {
                     break;
                 case 5:
                     CreateNewClientFolder obj5 = new CreateNewClientFolder();
-                    obj5.createNewClientFolder(user, users, in, out);
+                    obj5.createNewClientFolder(user.getClientPath(), out);
                     choice = 0;
                     break;
                 case 6:
@@ -100,28 +96,40 @@ public class AuthenticatedMenu {
                     choice = 0;
                     break;
                 case 7:
-                    DeleteClientFolder obj7 = new DeleteClientFolder();
-                    // obj7.deleteClientFolder();
+                    DeleteClientFolderOrFile obj7 = new DeleteClientFolderOrFile();
+                    obj7.deleteClientFolder(user.getClientPath(), out);
                     choice = 0;
                     break;
                 case 8:
-                    DeleteServerFolder obj8 = new DeleteServerFolder();
-                    // obj8.deleteServerFolder();
+                    DeleteServerFolderOrFile obj8 = new DeleteServerFolderOrFile();
+                    obj8.deleteServerFolder(user.getLastSessionServer(), in, out);
                     choice = 0;
                     break;
                 case 9:
-                    DownloadAFile obj9 = new DownloadAFile();
-                    // obj9.downloadAFile();
+                    int filePort = Integer.parseInt(in.readUTF());
+                    System.out.println("A Escuta no Porto " + filePort);
+                    try (ServerSocket folderSocket = new ServerSocket(filePort)) {
+                        System.out.println("LISTEN SOCKET=" + folderSocket);
+                        
+                        Socket clientSocket_ = folderSocket.accept(); // BLOQUEANTE
+
+                        System.out.println("CLIENT_SOCKET (created at accept())=" + clientSocket_);
+                        new DownloadAFile(clientSocket_);
+                        
+                    } catch (Exception e) {
+                        System.out.println("Error with server socket: " + e);
+                    }
+                    
                     choice = 0;
                     break;
                 case 10:
                     ListClientFiles obj10 = new ListClientFiles();
-                    // obj10.listClientFiles();
+                    obj10.listClientFiles(user.getClientPath(), out);
                     choice = 0;
                     break;
                 case 11:
                     ListServerFiles obj11 = new ListServerFiles();
-                    // obj11.listServerFiles(user);
+                    obj11.listServerFiles(user.getLastSessionServer(), in, out);
                     choice = 0;
                     break;
                 case 12:

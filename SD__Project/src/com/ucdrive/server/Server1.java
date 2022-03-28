@@ -28,9 +28,6 @@ public class Server1 {
         ServerFoldersCheck check = new ServerFoldersCheck();
         check.checkingFolders(users.getUsers());
 
-        Folder home = new Folder(startDir);
-        helper.listFiles(home, startDir);
-
         Path currentRelativePath = Paths.get("");
         String s = currentRelativePath.toAbsolutePath().toString();
 

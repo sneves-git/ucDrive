@@ -11,7 +11,7 @@ import java.io.*;
 import java.net.*;
 
 public class Client {
-    private static Socket s = null;
+    private static Socket sCommand = null, sFile = null;
     private static int serverPort = -1;
     private static String primaryIpAddress = null, secondaryIpAddress = null;
     private static IpAndPort ipAndPort = new IpAndPort();
@@ -22,7 +22,6 @@ public class Client {
         int choice = 0;
         String path = "src/com/ucdrive/configs/";
         String fileName = "primary_server_ip_port.txt";
-
 
         // Read ip and port info
         try {
@@ -62,13 +61,13 @@ public class Client {
                 case 2:
                     try {
                         // 1o passo
-                        s = new Socket(ipAndPort.getPrimaryIp(), ipAndPort.getPrimaryCommandPort());
+                        sCommand = new Socket(ipAndPort.getPrimaryIp(), ipAndPort.getPrimaryCommandPort());
                         System.out.println("SERVER PORT = " + ipAndPort.getPrimaryCommandPort());
-                        System.out.println("SOCKET=" + s);
+                        System.out.println("SOCKET=" + sCommand);
 
                         // 2o passo
-                        DataInputStream in = new DataInputStream(s.getInputStream());
-                        DataOutputStream out = new DataOutputStream(s.getOutputStream());
+                        DataInputStream in = new DataInputStream(sCommand.getInputStream());
+                        DataOutputStream out = new DataOutputStream(sCommand.getOutputStream());
 
                         String texto = "";
                         InputStreamReader input = new InputStreamReader(System.in);
@@ -82,8 +81,7 @@ public class Client {
                         System.out.println(ipAndPort);
                         AuthenticatedMenu authMenu = new AuthenticatedMenu();
 
-                        choice = authMenu.authenticatedMenu(s, in, out, reader, ipAndPort);
-
+                        choice = authMenu.authenticatedMenu(sCommand, sFile, in, out, reader, ipAndPort);
 
                         /*
                          * 
@@ -116,9 +114,9 @@ public class Client {
                     } catch (IOException e) {
                         System.out.println("IO:" + e.getMessage());
                     } finally {
-                        if (s != null)
+                        if (sCommand != null)
                             try {
-                                s.close();
+                                sCommand.close();
                             } catch (IOException e) {
                                 System.out.println("close:" + e.getMessage());
                             }

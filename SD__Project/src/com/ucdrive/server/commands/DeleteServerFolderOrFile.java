@@ -1,15 +1,13 @@
 package com.ucdrive.server.commands;
-
 import java.io.*;
 import java.nio.file.*;
 import java.util.*;
 
-public class CreateNewServerFolder {
-    public CreateNewServerFolder() {
-    }
+public class DeleteServerFolderOrFile {
+    public DeleteServerFolderOrFile(){}
 
-    public void createNewServerFolder(String serverPath, DataInputStream in, DataOutputStream out) throws IOException {
-        System.out.println("--------- Create new server Folder --------");
+    public void deleteServerFolder(String serverPath, DataInputStream in, DataOutputStream out) throws IOException  {
+        System.out.println("--------- Delete server Folder/File --------");
         Path currentRelativePath = Paths.get("");
         String path = currentRelativePath.toAbsolutePath().toString() + "/src/com/ucdrive/server/" + serverPath;
 
@@ -25,7 +23,7 @@ public class CreateNewServerFolder {
             System.out.println("Wrong input!");
             return;
         } else if (aux_list.size() == 2) {
-            if (aux_list.get(0).equals("mkdir")) {
+            if (aux_list.get(0).equals("del")) {
                 aux_list.remove(0);
             } else {
                 System.out.println("Wrong input!");
@@ -34,10 +32,11 @@ public class CreateNewServerFolder {
         }
 
         File f = new File(path + "/" + aux_list.get(0));
-        if (f.mkdir()) {
+        if (f.exists()) {
+            f.delete();
             System.out.println("Success!");
         } else {
-            System.out.println("Failed!");
+            System.out.println("The folder/file doesn't exist or you are in the wrong directory.");
         }
     }
 }

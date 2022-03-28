@@ -9,28 +9,28 @@ public class AuthenticatedMenu {
     public AuthenticatedMenu() {
     }
 
-    public int authenticatedMenu(Socket s, DataInputStream in, DataOutputStream out, BufferedReader reader,
-            IpAndPort ipAndPort) {
+    public int authenticatedMenu(Socket s, Socket sFile, DataInputStream in, DataOutputStream out, BufferedReader reader,
+            IpAndPort ipAndPort) throws IOException{
         // Checks if user's input is valid
         int choice = 0;
         try {
             do {
-                //System.out.println("before reading");
+                // System.out.println("before reading");
                 // printing Menu
                 System.out.print(in.readUTF());
-                //System.out.println("after reading");
+                // System.out.println("after reading");
 
                 // Read and send to server choice
                 out.writeUTF(reader.readLine());
-                //System.out.println("after writing");
+                // System.out.println("after writing");
 
                 try {
-                    //System.out.println("before choice: " + choice);
+                    // System.out.println("before choice: " + choice);
 
                     // Read choice back and confirms if choice is invalid
                     choice = Integer.parseInt(in.readUTF());
 
-                    //System.out.println("after choice: " + choice);
+                    // System.out.println("after choice: " + choice);
 
                 } catch (NumberFormatException e) {
                     choice = 0;
@@ -68,16 +68,27 @@ public class AuthenticatedMenu {
                         obj6.createNewServerFolder(in, out, reader);
                         break;
                     case 7:
-                        DeleteClientFolder obj7 = new DeleteClientFolder();
-                        // obj7.deleteClientFolder();
+                        DeleteClientFolderOrFile obj7 = new DeleteClientFolderOrFile();
+                        obj7.deleteClientFolder(in, out, reader);
+                        break;
+                    case 8:
+                        DeleteServerFolderOrFile obj8 = new DeleteServerFolderOrFile();
+                        obj8.deleteServerFolder(in, out, reader);
                         break;
                     case 9:
-                        DownloadAFile obj9 = new DownloadAFile();
-                        // obj9.downloadAFile();
+                        ipAndPort.setPrimaryFilePort(0);
+                        out.writeUTF(String.valueOf(ipAndPort.getPrimaryFilePort())); // Sends port number to server
+                        in.readUTF(); // <-- signals that client can establish connection
+                        sFile = new Socket(ipAndPort.getPrimaryIp(), ipAndPort.getPrimaryFilePort());
+                        new DownloadAFile(sFile, in, out, reader);
                         break;
                     case 10:
                         ListClientFiles obj10 = new ListClientFiles();
-                        // obj10.listClientFiles();
+                        obj10.listClientFiles(in, out);
+                        break;
+                    case 11:
+                        ListServerFiles obj11 = new ListServerFiles();
+                        obj11.listServerFiles(in);
                         break;
                     case 12:
                         UploadAFile obj12 = new UploadAFile();
