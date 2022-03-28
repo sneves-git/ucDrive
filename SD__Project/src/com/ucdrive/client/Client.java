@@ -125,7 +125,7 @@ public class Client {
                 case 3:
                     break;
             }
-        } while (choice != 13);
+        } while (choice != 3);
 
     }
 

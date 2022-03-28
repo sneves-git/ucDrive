@@ -41,7 +41,8 @@ public class AuthenticatedMenu {
                     case 1:
                         ChangePassword obj1 = new ChangePassword();
                         obj1.changePassword(in, out, reader);
-                        break;
+                        return 0;
+
                     case 2:
                         ChangeClientDirectory obj2 = new ChangeClientDirectory();
                         obj2.changeClientDirectory(in, out, reader);
