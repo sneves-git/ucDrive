@@ -97,8 +97,14 @@ public class AuthenticatedMenu {
                         obj11.listServerFiles(in);
                         break;
                     case 12:
-                        UploadAFile obj12 = new UploadAFile();
-                        // obj12.uploadAFile();
+                        // Receives new port to use for download
+                        ipAndPort.setPrimaryFilePort(Integer.parseInt(in.readUTF()));
+
+                        // Establishes connection with server for download
+                        sFile = new Socket(ipAndPort.getPrimaryIp(), ipAndPort.getPrimaryFilePort());
+
+                        UploadHelper obj12 = new UploadHelper();
+                        obj12.uploadHelper(in, out, reader, sFile);
                         break;
                     case 13:
                         // exit();

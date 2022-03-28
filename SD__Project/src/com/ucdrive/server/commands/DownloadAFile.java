@@ -2,10 +2,7 @@ package com.ucdrive.server.commands;
 
 import java.io.*;
 import java.net.Socket;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
-import java.util.ArrayList;
-import com.ucdrive.refactorLater.*;
 
 public class DownloadAFile extends Thread {
     private DataOutputStream out;

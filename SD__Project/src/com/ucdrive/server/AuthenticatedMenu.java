@@ -142,8 +142,24 @@ public class AuthenticatedMenu {
                     choice = 0;
                     break;
                 case 12:
-                    UploadAFile obj12 = new UploadAFile();
-                    // obj12.uploadAFile();
+                    try (ServerSocket folderSocket = new ServerSocket(0)) {
+                        int filePort = folderSocket.getLocalPort();
+                        System.out.println("A Escuta no Porto " + filePort);
+
+                        out.writeUTF(Integer.toString(filePort));
+
+                        System.out.println("LISTEN SOCKET=" + folderSocket);
+
+                        Socket clientSocket_ = folderSocket.accept(); // BLOQUEANTE
+
+                        System.out.println("CLIENT_SOCKET (created at accept())=" + clientSocket_);
+
+                        UploadHelper helper = new UploadHelper();
+                        helper.uploadHelper(user.getClientPath(), user.getLastSessionServer(), in, out, clientSocket_);
+                    } catch (Exception e) {
+                        System.out.println("Error with server socket: " + e);
+                    }
+
                     choice = 0;
                     break;
                 case 13:
