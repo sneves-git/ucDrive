@@ -12,7 +12,7 @@ public class DownloadAFile extends Thread {
 
     public DownloadAFile(Socket aClientSocket, String clientPath, String fileName) {
         try {
-            this.buffsize = 8192;
+            this.buffsize = 1024;
             this.clientPath = clientPath;
             this.fileName = fileName;
             this.socket = aClientSocket;
@@ -43,14 +43,13 @@ public class DownloadAFile extends Thread {
             FileOutputStream fos = new FileOutputStream(clientPath + "/" + fileName);
             byte[] buf = new byte[buffsize];
             
-            String s;
+            String s, a;
 
-            do{
-                buf = in.readAllBytes();
-                fos.write(buf);
-                
-            }while((s = new String(buf, StandardCharsets.UTF_8)).equals("Finished downloading file!"));
-            
+            int length;
+            while((length = in.read(buf, 0, buf.length)) >0){
+                fos.write(buf, 0, length);
+
+            }
             fos.close();
            
         } catch (IOException e) {

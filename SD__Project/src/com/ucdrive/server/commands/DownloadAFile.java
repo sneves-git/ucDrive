@@ -2,6 +2,7 @@ package com.ucdrive.server.commands;
 
 import java.io.*;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.util.ArrayList;
 import com.ucdrive.refactorLater.*;
@@ -15,7 +16,7 @@ public class DownloadAFile extends Thread {
 
     public DownloadAFile(Socket aClientSocket, String serverPath, String choice) {
         try {
-            this.buffsize = 8192;
+            this.buffsize = 1024;
             this.choice = choice;
             this.clientSocket = aClientSocket;
             this.serverPath = serverPath;
@@ -58,15 +59,13 @@ public class DownloadAFile extends Thread {
                     nread = fis.read(buf);
                     if (nread > 0) {
                         out.write(buf, 0, nread);
+
                     }
                 } while (nread > -1);
             } catch (IOException e) {
                 e.printStackTrace();
             }
             fis.close();
-
-            String aux = "Finished downloading file!";
-            out.write(aux.getBytes());
 
         } catch (IOException e) {
             e.printStackTrace();
