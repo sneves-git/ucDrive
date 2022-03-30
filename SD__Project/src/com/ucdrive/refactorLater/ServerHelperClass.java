@@ -2,6 +2,7 @@ package com.ucdrive.refactorLater;
 
 import java.util.*;
 import java.io.*;
+import java.net.*;
 
 public class ServerHelperClass {
 
@@ -39,7 +40,7 @@ public class ServerHelperClass {
 		}
 	}
 
-	public ArrayList<String> returnFilesList(String path){
+	public ArrayList<String> returnFilesList(String path) {
 		ArrayList<String> filesList = new ArrayList<String>();
 		File dir = new File(path);
 		File[] files = dir.listFiles();
@@ -48,10 +49,84 @@ public class ServerHelperClass {
 			for (File file : files) {
 				if (!file.isDirectory()) {
 					filesList.add(file.getName());
-				} 
+				}
 			}
 		}
 
 		return filesList;
+	}
+
+	public String determineIfPrimaryOrSecondary(int hostPort, String host) {
+		final int timeout = 10;
+		final int bufsize = 4096;
+
+		int failedHeartbeats = 0;
+		System.out.println("ENTREI");
+
+		InetAddress ia = null;
+		try {
+			ia = InetAddress.getByName(host);
+			System.out.println(ia);
+			try (DatagramSocket ds = new DatagramSocket()) {
+				System.out.println("ANTES TIMEOUT");
+
+				ds.setSoTimeout(timeout);
+				System.out.println("DEPois TIMEOUT");
+
+				try {
+					System.out.println("NO TRY");
+					ByteArrayOutputStream baos = new ByteArrayOutputStream();
+					DataOutputStream dos = new DataOutputStream(baos);
+					dos.writeInt(0);
+					byte[] buf = baos.toByteArray();
+
+					DatagramPacket dp = new DatagramPacket(buf, buf.length, ia, hostPort);
+					ds.send(dp);
+
+					byte[] rbuf = new byte[bufsize];
+					DatagramPacket dr = new DatagramPacket(rbuf, rbuf.length);
+
+					ds.receive(dr);
+					ByteArrayInputStream bais = new ByteArrayInputStream(rbuf, 0, dr.getLength());
+					DataInputStream dis = new DataInputStream(bais);
+					int n = dis.readInt();
+					System.out.println("Got: " + n + ".");
+					/*
+					 * for (int i = 0; i < 5; i++) {
+					 * byte buf[] = new byte[bufsize];
+					 * DatagramPacket dp = new DatagramPacket(buf, buf.length);
+					 * System.out.println("antes de receber");
+					 * ds.receive(dp);
+					 * System.out.println("recebi o heartbeat hehe vou ser secundario :(");
+					 * }
+					 */
+
+				} catch (SocketTimeoutException e) {
+					System.out.println("Na exception");
+
+					failedHeartbeats++;
+					e.getStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				System.out.println("fechar o socket");
+
+				ds.close();
+
+			} catch (SocketException se) {
+				se.printStackTrace();
+			}
+		} catch (UnknownHostException e1) {
+			e1.printStackTrace();
+		}
+
+		if (failedHeartbeats == 0) {
+			System.out.println("secondary");
+			return "Secondary";
+		} else {
+			System.out.println("primary");
+			return "Primary";
+		}
+
 	}
 }

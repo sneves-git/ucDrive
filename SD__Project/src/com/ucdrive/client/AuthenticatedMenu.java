@@ -4,19 +4,21 @@ import com.ucdrive.client.commands.*;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketException;
 
 public class AuthenticatedMenu {
     public AuthenticatedMenu() {
     }
 
     public int authenticatedMenu(Socket s, DataInputStream in, DataOutputStream out,
-            BufferedReader reader,
-            IpAndPort ipAndPort) throws IOException {
+                                 BufferedReader reader,
+                                 IpAndPort ipAndPort) throws IOException {
         // Checks if user's input is valid
         Socket sFile;
         int choice = 0;
         try {
             do {
+
                 // System.out.println("before reading");
                 // printing Menu
                 System.out.print(in.readUTF());
@@ -88,7 +90,7 @@ public class AuthenticatedMenu {
                         // Asks user which file he wants to download
                         DownloadHelper helper = new DownloadHelper();
                         helper.downloadHelper(in, out, reader, sFile);
-                        
+
                         break;
                     case 10:
                         ListClientFiles obj10 = new ListClientFiles();
@@ -112,6 +114,8 @@ public class AuthenticatedMenu {
                         break;
                 }
             } while (choice != 13 && choice != 4 && choice != 1);
+        } catch (SocketException b) {
+            return 0;
         } catch (Exception e) {
             e.printStackTrace();
         }

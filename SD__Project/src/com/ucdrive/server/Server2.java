@@ -1,6 +1,7 @@
 package com.ucdrive.server;
 
 import com.ucdrive.configs.UsersConfigsFile;
+import com.ucdrive.refactorLater.ServerHelperClass;
 import com.ucdrive.refactorLater.User;
 import com.ucdrive.refactorLater.Users;
 
@@ -13,7 +14,7 @@ import java.util.*;
 public class Server2 {
     private static String server = "server2";
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         // Extracts users information from users.txt
         Users users = new Users();
         UsersConfigsFile usersConfigsFile = new UsersConfigsFile();
@@ -30,8 +31,8 @@ public class Server2 {
         String totalPath = Paths.get(s, path).toString();
         File file = new File(totalPath);
 
-        String server2Ip = null;
-        int serverPort = -1, udpPort = -1, numero = 0;
+        String server1Ip = null;
+        int serverPort = -1, udpPortServer1 = -1, udpPortServer2 = -1, numero = 0;
         Scanner sc = null;
         try {
             sc = new Scanner(file);
@@ -42,61 +43,70 @@ public class Server2 {
             if (sc.hasNextLine()) {
                 serverPort = Integer.parseInt(sc.nextLine());
             }
-            if(sc.hasNextLine()){
-                server2Ip = sc.nextLine();
+            if (sc.hasNextLine()) {
+                server1Ip = sc.nextLine();
             }
-            if(sc.hasNextLine()){
-                udpPort = Integer.parseInt(sc.nextLine());
+            if (sc.hasNextLine()) {
+                udpPortServer2 = Integer.parseInt(sc.nextLine());
             }
+            if (sc.hasNextLine()) {
+                udpPortServer1 = Integer.parseInt(sc.nextLine());
+            }
+
         } catch (IOException e) {
             System.out.println("Listen:" + e.getMessage());
             e.printStackTrace();
-        }finally{
-            if(sc != null){
+        } finally {
+            if (sc != null) {
                 sc.close();
             }
         }
 
         // UDP connection
-        DatagramSocket udpSocket = null;
-        //try{
-            System.out.println("Socket Datagram � escuta no porto " + udpPort);
+        System.out.println("Socket Datagram à escuta no porto " + udpPortServer2);
 
-            /* Pseudo codigo
-             Tenho de verificar se sou o server primario ou secundario
-             Se for primario{
-                   udpSocket = new DatagramSocket(udpPort);
+        ServerHelperClass helper = new ServerHelperClass();
+        String status = helper.determineIfPrimaryOrSecondary(udpPortServer1, server1Ip);
+        if (status.equals("Primary")) {
+            System.out.println("sou primario");
+            new PrimaryHeartbeats(udpPortServer2);
 
-                   new UDPFileStorageSender_2();
-                   new UDPHeartbeatSender_2();
-             }Se for secundario{
-                   udpSocket = new DatagramSocket();
+            // TCP connection
+            System.out.println("A Escuta no Porto " + serverPort);
+            try (ServerSocket listenSocket = new ServerSocket(serverPort)) {
+                System.out.println("LISTEN SOCKET=" + listenSocket);
+                while (true) {
+                    Socket clientSocket = listenSocket.accept(); // BLOQUEANTE
 
-                   new UDPFileStorageReceiver_2();
-                   new UDPHeartbeatReceiver_2();
-             }
-
-            * */
-
-        //}catch (SocketException e){System.out.println("Socket: " + e.getMessage());
-        //}catch (IOException e) {System.out.println("IO: " + e.getMessage());
-        //}finally {
-        //    if(udpSocket != null) udpSocket.close();
-        //}
-
-        // TCP connection
-        System.out.println("A Escuta no Porto " + serverPort);
-        try (ServerSocket listenSocket = new ServerSocket(serverPort)) {
-            System.out.println("LISTEN SOCKET=" + listenSocket);
-            while (true) {
-                Socket clientSocket = listenSocket.accept(); // BLOQUEANTE
-
-                System.out.println("CLIENT_SOCKET (created at accept())=" + clientSocket);
-                numero++;
-                new TCPConnection_2(users, clientSocket, numero, server);
+                    System.out.println("CLIENT_SOCKET (created at accept())=" + clientSocket);
+                    numero++;
+                    new TCPConnection_2(users, clientSocket, numero, server);
+                }
+            } catch (Exception e) {
+                System.out.println("Error with server socket: " + e);
             }
-        } catch (Exception e) {
-            System.out.println("Error with server socket: " + e);
+
+        } else {
+
+            Thread thread = new SecondaryHeartbeats(udpPortServer1, server1Ip);
+            thread.join();
+            System.out.println("SOU PRIMARIO DEPOIS DE O OUTRO TER morrido");
+            new PrimaryHeartbeats(udpPortServer2);
+
+            // TCP connection
+            System.out.println("A Escuta no Porto " + serverPort);
+            try (ServerSocket listenSocket = new ServerSocket(serverPort)) {
+                System.out.println("LISTEN SOCKET=" + listenSocket);
+                while (true) {
+                    Socket clientSocket = listenSocket.accept(); // BLOQUEANTE
+
+                    System.out.println("CLIENT_SOCKET (created at accept())=" + clientSocket);
+                    numero++;
+                    new TCPConnection_2(users, clientSocket, numero, server);
+                }
+            } catch (Exception e) {
+                System.out.println("Error with server socket: " + e);
+            }
         }
 
     }
@@ -133,7 +143,7 @@ class TCPConnection_2 extends Thread {
     }
 }
 
-class UDPFileStorageReceiver_2 extends Thread{
+class UDPFileStorageReceiver_2 extends Thread {
     private DatagramSocket socket;
     private String serverName;
 
@@ -147,23 +157,24 @@ class UDPFileStorageReceiver_2 extends Thread{
     public void run() {
         // If it is receiving then it means that the primary server is Server1
 
-        /* RECEIVE SOMETHING IN UDP
-        while(true){
-            byte[] buffer = new byte[1000];
-            DatagramPacket request = new DatagramPacket(buffer, buffer.length);
-            socket.receive(request);
-            s=new String(request.getData(), 0, request.getLength());
-            System.out.println("Server Recebeu: " + s);
-
-            DatagramPacket reply = new DatagramPacket(request.getData(),
-                    request.getLength(), request.getAddress(), request.getPort());
-            socket.send(reply);
-        }
-        */
+        /*
+         * RECEIVE SOMETHING IN UDP
+         * while(true){
+         * byte[] buffer = new byte[1000];
+         * DatagramPacket request = new DatagramPacket(buffer, buffer.length);
+         * socket.receive(request);
+         * s=new String(request.getData(), 0, request.getLength());
+         * System.out.println("Server Recebeu: " + s);
+         * 
+         * DatagramPacket reply = new DatagramPacket(request.getData(),
+         * request.getLength(), request.getAddress(), request.getPort());
+         * socket.send(reply);
+         * }
+         */
     }
 }
 
-class UDPFileStorageSender_2 extends Thread{
+class UDPFileStorageSender_2 extends Thread {
     private DatagramSocket socket;
     private String server2Name;
 
@@ -177,31 +188,34 @@ class UDPFileStorageSender_2 extends Thread{
     public void run() {
         // If it is sending then it means that I (server2) am the primary server
 
-        /* SEND SOMETHING IN UDP
-        InputStreamReader input = new InputStreamReader(System.in);
-        BufferedReader reader = new BufferedReader(input);
-
-        while (true) {
-            System.out.print("Mensagem a enviar = ");
-            // READ STRING FROM KEYBOARD
-            try {
-                texto = reader.readLine();
-
-            } catch (Exception e) {
-            }
-
-            byte[] m = texto.getBytes();
-
-            InetAddress aHost = InetAddress.getByName("10.16.1.47");  <--- ip do servidor server1
-            int serverPort = 6789;
-            DatagramPacket request = new DatagramPacket(m, m.length, aHost, serverPort);
-            socket.send(request);
-            byte[] buffer = new byte[1000];
-            DatagramPacket reply = new DatagramPacket(buffer, buffer.length);
-            socket.receive(reply);
-            System.out.println("Recebeu: " + new String(reply.getData(), 0, reply.getLength()));
-        }
-        */
+        /*
+         * SEND SOMETHING IN UDP
+         * InputStreamReader input = new InputStreamReader(System.in);
+         * BufferedReader reader = new BufferedReader(input);
+         * 
+         * while (true) {
+         * System.out.print("Mensagem a enviar = ");
+         * // READ STRING FROM KEYBOARD
+         * try {
+         * texto = reader.readLine();
+         * 
+         * } catch (Exception e) {
+         * }
+         * 
+         * byte[] m = texto.getBytes();
+         * 
+         * InetAddress aHost = InetAddress.getByName("10.16.1.47"); <--- ip do servidor
+         * server1
+         * int serverPort = 6789;
+         * DatagramPacket request = new DatagramPacket(m, m.length, aHost, serverPort);
+         * socket.send(request);
+         * byte[] buffer = new byte[1000];
+         * DatagramPacket reply = new DatagramPacket(buffer, buffer.length);
+         * socket.receive(reply);
+         * System.out.println("Recebeu: " + new String(reply.getData(), 0,
+         * reply.getLength()));
+         * }
+         */
     }
 }
 
@@ -215,30 +229,32 @@ class UDPHeartbeatSender_2 extends Thread {
 
     // =============================
     public void run() {
-        // If it is sending heartbeats then it means that I (server 2) am the primary server
+        // If it is sending heartbeats then it means that I (server 2) am the primary
+        // server
 
-        /* SEND SOMETHING IN UDP - Heartbeats example sender
-        try (DatagramSocket ds = new DatagramSocket(port)) {
-            while (true) {
-                byte buf[] = new byte[bufsize];
-                DatagramPacket dp = new DatagramPacket(buf, buf.length);
-                ds.receive(dp);
-                ByteArrayInputStream bais = new ByteArrayInputStream(buf, 0, dp.getLength());
-                DataInputStream dis = new DataInputStream(bais);
-                int count = dis.readInt();
-
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                DataOutputStream dos = new DataOutputStream(baos);
-                dos.writeInt(count);
-                byte resp[] = baos.toByteArray();
-                DatagramPacket dpresp = new DatagramPacket(resp, resp.length, dp.getAddress(), dp.getPort());
-                ds.send(dpresp);
-            }
-        }
-        */
+        /*
+         * SEND SOMETHING IN UDP - Heartbeats example sender
+         * try (DatagramSocket ds = new DatagramSocket(port)) {
+         * while (true) {
+         * byte buf[] = new byte[bufsize];
+         * DatagramPacket dp = new DatagramPacket(buf, buf.length);
+         * ds.receive(dp);
+         * ByteArrayInputStream bais = new ByteArrayInputStream(buf, 0, dp.getLength());
+         * DataInputStream dis = new DataInputStream(bais);
+         * int count = dis.readInt();
+         * 
+         * ByteArrayOutputStream baos = new ByteArrayOutputStream();
+         * DataOutputStream dos = new DataOutputStream(baos);
+         * dos.writeInt(count);
+         * byte resp[] = baos.toByteArray();
+         * DatagramPacket dpresp = new DatagramPacket(resp, resp.length,
+         * dp.getAddress(), dp.getPort());
+         * ds.send(dpresp);
+         * }
+         * }
+         */
     }
 }
-
 
 class UDPHeartbeatReceiver_2 extends Thread {
     private DatagramSocket socket;
@@ -255,40 +271,44 @@ class UDPHeartbeatReceiver_2 extends Thread {
 
     // =============================
     public void run() {
-        // If it is receiving heartbeats then it means that I (server 2) am the secondary server
+        // If it is receiving heartbeats then it means that I (server 2) am the
+        // secondary server
 
-        /* SEND SOMETHING IN UDP - Heartbeats example receiver
-        InetAddress ia = InetAddress.getByName("localhost"); <--- ip do servidor server1
-        try (DatagramSocket ds = new DatagramSocket()) {
-            ds.setSoTimeout(timeout);
-            int failedheartbeats = 0;
-            while (failedheartbeats < maxfailedrounds) {
-                try {
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    DataOutputStream dos = new DataOutputStream(baos);
-                    dos.writeInt(count++);
-                    byte [] buf = baos.toByteArray();
-
-                    DatagramPacket dp = new DatagramPacket(buf, buf.length, ia, port);
-                    ds.send(dp);
-
-                    byte [] rbuf = new byte[bufsize];
-                    DatagramPacket dr = new DatagramPacket(rbuf, rbuf.length);
-
-                    ds.receive(dr);
-                    failedheartbeats = 0;
-                    ByteArrayInputStream bais = new ByteArrayInputStream(rbuf, 0, dr.getLength());
-                    DataInputStream dis = new DataInputStream(bais);
-                    int n = dis.readInt();
-                    System.out.println("Got: " + n + ".");
-                }
-                catch (SocketTimeoutException ste) {
-                    failedheartbeats++;
-                    System.out.println("Failed heartbeats: " + failedheartbeats);
-                }
-                Thread.sleep(period);
-            }
-        }
-        */
+        /*
+         * SEND SOMETHING IN UDP - Heartbeats example receiver
+         * InetAddress ia = InetAddress.getByName("localhost"); <--- ip do servidor
+         * server1
+         * try (DatagramSocket ds = new DatagramSocket()) {
+         * ds.setSoTimeout(timeout);
+         * int failedheartbeats = 0;
+         * while (failedheartbeats < maxfailedrounds) {
+         * try {
+         * ByteArrayOutputStream baos = new ByteArrayOutputStream();
+         * DataOutputStream dos = new DataOutputStream(baos);
+         * dos.writeInt(count++);
+         * byte [] buf = baos.toByteArray();
+         * 
+         * DatagramPacket dp = new DatagramPacket(buf, buf.length, ia, port);
+         * ds.send(dp);
+         * 
+         * byte [] rbuf = new byte[bufsize];
+         * DatagramPacket dr = new DatagramPacket(rbuf, rbuf.length);
+         * 
+         * ds.receive(dr);
+         * failedheartbeats = 0;
+         * ByteArrayInputStream bais = new ByteArrayInputStream(rbuf, 0,
+         * dr.getLength());
+         * DataInputStream dis = new DataInputStream(bais);
+         * int n = dis.readInt();
+         * System.out.println("Got: " + n + ".");
+         * }
+         * catch (SocketTimeoutException ste) {
+         * failedheartbeats++;
+         * System.out.println("Failed heartbeats: " + failedheartbeats);
+         * }
+         * Thread.sleep(period);
+         * }
+         * }
+         */
     }
 }

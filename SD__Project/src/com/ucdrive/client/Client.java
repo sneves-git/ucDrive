@@ -15,11 +15,13 @@ public class Client {
         // Login
         int choice = 0;
         String path = "src/com/ucdrive/configs/";
-        String fileName = "primary_server_ip_port.txt";
+        String primaryFileName = "primary_server_ip_port.txt";
+        String secondaryFileName = "secondary_server_ip_port.txt";
+
 
         // Read ip and port info
         try {
-            File myObj = new File(path + fileName);
+            File myObj = new File(path + primaryFileName);
             Scanner myReader = new Scanner(myObj);
 
             if (myReader.hasNextLine()) {
@@ -30,7 +32,24 @@ public class Client {
             }
             myReader.close();
         } catch (IOException e1) {
-            System.out.println("An error occurred with " + fileName + ".");
+            System.out.println("An error occurred with " + primaryFileName + ".");
+            e1.printStackTrace();
+        }
+
+        // Read ip and port info
+        try {
+            File myObj = new File(path + secondaryFileName);
+            Scanner myReader = new Scanner(myObj);
+
+            if (myReader.hasNextLine()) {
+                ipAndPort.setSecondaryIp(myReader.nextLine());
+            }
+            if (myReader.hasNextLine()) {
+                ipAndPort.setSecondaryCommandPort(Integer.parseInt(myReader.nextLine()));
+            }
+            myReader.close();
+        } catch (IOException e1) {
+            System.out.println("An error occurred with " + secondaryFileName + ".");
             e1.printStackTrace();
         }
 
@@ -55,7 +74,35 @@ public class Client {
                 case 2:
                     try {
                         // 1o passo
-                        sCommand = new Socket(ipAndPort.getPrimaryIp(), ipAndPort.getPrimaryCommandPort());
+                        try{
+                            System.out.println("1");
+                            sCommand = new Socket(ipAndPort.getPrimaryIp(), ipAndPort.getPrimaryCommandPort());
+                            System.out.println("2");
+
+                        }catch(SocketException e){
+                            try{
+                                System.out.println("3");
+
+                                String auxIp = ipAndPort.getSecondaryIp();
+                                int auxPort = ipAndPort.getSecondaryCommandPort();
+
+                                ipAndPort.setSecondaryIp(ipAndPort.getPrimaryIp());
+                                ipAndPort.setSecondaryCommandPort(ipAndPort.getPrimaryCommandPort());
+                                ipAndPort.setPrimaryIp(auxIp);
+                                ipAndPort.setPrimaryCommandPort(auxPort);
+                                System.out.println(ipAndPort.getPrimaryIp());
+                                System.out.println(ipAndPort.getPrimaryCommandPort());
+                                System.out.println(ipAndPort.getSecondaryIp());
+                                System.out.println(ipAndPort.getSecondaryCommandPort());
+
+                                sCommand = new Socket(ipAndPort.getPrimaryIp(), ipAndPort.getPrimaryCommandPort());
+                                System.out.println("4");
+
+                            }catch(SocketException se){
+                                break;
+                            }
+                        }
+
                         System.out.println("SERVER PORT = " + ipAndPort.getPrimaryCommandPort());
                         System.out.println("SOCKET=" + sCommand);
 
