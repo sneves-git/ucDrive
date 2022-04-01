@@ -33,7 +33,7 @@ public class Server2 {
 
         String server1Ip = null;
         int serverPort = -1, udpPortServer1 = -1, udpPortServer2 = -1, numero = 0, filePortServer2 = -1,
-                filePortServer1 = -1;
+                filePortServer1 = -1, updateFolderOrFilePort1 = -1, updateFolderOrFilePort2 = -1;
         Scanner sc = null;
         try {
             sc = new Scanner(file);
@@ -58,6 +58,12 @@ public class Server2 {
             }
             if (sc.hasNextLine()) {
                 filePortServer1 = Integer.parseInt(sc.nextLine());
+            }
+            if (sc.hasNextLine()) {
+                updateFolderOrFilePort1 = Integer.parseInt(sc.nextLine());
+            }
+            if (sc.hasNextLine()) {
+                updateFolderOrFilePort2 = Integer.parseInt(sc.nextLine());
             }
 
         } catch (IOException e) {
