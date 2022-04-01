@@ -37,6 +37,10 @@ public class PrimaryFileStorage extends Thread {
 
             getAllDirectoryFiles(startDir, ds);
             sendAndReceiveAck("Finished", ds, false);
+
+            dos.close();
+            baos.close();
+            ds.close();
         } catch (SocketException se) {
             se.printStackTrace();
         } catch (NoSuchAlgorithmException nsa) {

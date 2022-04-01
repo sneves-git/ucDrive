@@ -17,7 +17,7 @@ public class FirstMenu {
     }
 
     public void firstMenu(Users users, DataInputStream in, DataOutputStream out, String server) {
-        int choice = -1;
+        int choice = -1, flag = 0;
         try {
             do {
                 // Receives signal that user wants to log in
@@ -26,6 +26,17 @@ public class FirstMenu {
                     case "login":
                         Login login = new Login();
                         this.user = login.login_(users, in, out);
+
+
+                         if (flag == 0) {
+                             if (user.getLastChoice() == 0) {
+                                 out.writeUTF("Menu!");
+                             } else {
+                                 out.writeUTF(Integer.toString(user.getLastChoice()));
+                             }
+                             flag = 1;
+                         }
+
 
                         AuthenticatedMenu authMenu = new AuthenticatedMenu();
                         choice = authMenu.authenticatedMenu(this.user, users, in, out, server);

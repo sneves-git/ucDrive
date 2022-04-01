@@ -1,5 +1,9 @@
 package com.ucdrive.server.commands;
 
+import com.ucdrive.configs.UsersConfigsFile;
+import com.ucdrive.refactorLater.User;
+import com.ucdrive.refactorLater.Users;
+
 import java.io.*;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -10,13 +14,17 @@ public class UploadAFile extends Thread {
 	private Socket socket;
 	private int buffsize;
 	private String ServerPath, fileName;
+	private User user;
+	private Users users;
 
-	public UploadAFile(Socket aClientSocket, String ServerPath, String fileName) {
+	public UploadAFile(Socket aClientSocket, String ServerPath, String fileName, User user, Users users) {
 		try {
 			this.buffsize = 1024;
 			this.ServerPath = ServerPath;
 			this.fileName = fileName;
 			this.socket = aClientSocket;
+			this.user = user;
+			this.users = users;
 			this.in = new DataInputStream(socket.getInputStream());
 
 			this.start();
@@ -38,6 +46,9 @@ public class UploadAFile extends Thread {
 
 			}
 			fos.close();
+
+			UsersConfigsFile conf = new UsersConfigsFile();
+			conf.updateLastChoice(0, user, users);
 
 		} catch (IOException e) {
 			e.printStackTrace();

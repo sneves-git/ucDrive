@@ -13,6 +13,7 @@ import java.util.*;
 
 public class Server1 {
     private static String server = "server1";
+    private static int flag = 0;
 
     public static void main(String[] args) throws InterruptedException {
         // Extracts users information from users.txt
@@ -81,7 +82,8 @@ public class Server1 {
         String startDir = Paths.get(a, p).toString();
 
         ServerHelperClass helper = new ServerHelperClass();
-        String status = helper.determineIfPrimaryOrSecondary(udpPortServer2, server2Ip);
+        String status = helper.determineIfPrimaryOrSecondary(udpPortServer2,
+                server2Ip);
         if (status.equals("Primary")) {
             System.out.println("sou primario");
             new PrimaryHeartbeats(udpPortServer1);
@@ -101,17 +103,18 @@ public class Server1 {
             } catch (Exception e) {
                 System.out.println("Error with server socket: " + e);
             }
-
         } else {
             Thread heartbeatThread = new SecondaryHeartbeats(udpPortServer2, server2Ip);
-            Thread fileThread = new SecondaryFileStorage(filePortServer1, filePortServer2, server2Ip, server);
+            Thread fileThread = new SecondaryFileStorage(filePortServer1,
+                    filePortServer2, server2Ip, server);
             heartbeatThread.join();
             fileThread.join();
 
             System.out.println("SOU PRIMARIO DEPOIS DE O OUTRO TER morrido");
 
             new PrimaryHeartbeats(udpPortServer1);
-            new PrimaryFileStorage(filePortServer1, filePortServer2, server2Ip, startDir, server);
+            new PrimaryFileStorage(filePortServer1, filePortServer2, server2Ip, startDir,
+                    server);
 
             // TCP connection
             System.out.println("A Escuta no Porto " + serverPort);
@@ -129,6 +132,7 @@ public class Server1 {
             }
         }
     }
+
 }
 
 class TCPConnection extends Thread {
@@ -161,4 +165,3 @@ class TCPConnection extends Thread {
         menu.firstMenu(users, in, out, server);
     }
 }
-

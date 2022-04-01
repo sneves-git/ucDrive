@@ -15,6 +15,7 @@ public class User implements Serializable {
 			CCnumber,
 			clientPath,
 			lastSessionServer;
+	private int lastChoice;
 
 	// Constructors
 	public User() {
@@ -27,10 +28,11 @@ public class User implements Serializable {
 		this.CCnumber = null;
 		this.clientPath = null;
 		this.lastSessionServer = null;
+		this.lastChoice = -1;
 	}
 
 	public User(String username, String password, String department, String address, String expirationDate,
-			String phoneNumber, String CCnumber, String lastSessionServer) {
+			String phoneNumber, String CCnumber, String lastSessionServer, int lastChoice) {
 		this.username = username;
 		this.password = password;
 		this.department = department;
@@ -39,6 +41,7 @@ public class User implements Serializable {
 		this.phoneNumber = phoneNumber;
 		this.CCnumber = CCnumber;
 		this.lastSessionServer = lastSessionServer;
+		this.lastChoice = lastChoice;
 
 		Path currentRelativePath = Paths.get("");
 		String s = currentRelativePath.toAbsolutePath().toString();
@@ -155,6 +158,14 @@ public class User implements Serializable {
 		this.lastSessionServer = lastSessionServer;
 	}
 
+	public void setLastChoice(int lastChoice) {
+		this.lastChoice = lastChoice;
+	}
+
+	public int getLastChoice() {
+		return lastChoice;
+	}
+
 	// toString method
 	public String toString() {
 		return "Username: " + username + "\tPassword: " + password +
@@ -162,6 +173,8 @@ public class User implements Serializable {
 				+ "\tPhone Number: " + phoneNumber + "\t CC Number: " + CCnumber + "\t Client Path: " + clientPath
 				+ "\tLast Session Server: "
 				+ lastSessionServer
+				+ "\tLast Choice: "
+				+ lastChoice
 				+ "\n";
 	}
 

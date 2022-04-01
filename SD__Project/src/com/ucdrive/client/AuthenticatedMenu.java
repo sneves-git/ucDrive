@@ -16,31 +16,35 @@ public class AuthenticatedMenu {
         // Checks if user's input is valid
         Socket sFile;
         int choice = 0;
+        String option = in.readUTF();
+
+         if (!option.equals("Menu!")) {
+             try {
+                choice = Integer.parseInt(option);
+             } catch (NumberFormatException e) {
+                choice = 0;
+             }
+         }
+
         try {
             do {
 
-                // System.out.println("before reading");
-                // printing Menu
-                System.out.print(in.readUTF());
-                // System.out.println("after reading");
-
-                // Read and send to server choice
-                out.writeUTF(reader.readLine());
-                // System.out.println("after writing");
-
-                try {
-                    // System.out.println("before choice: " + choice);
-
-                    // Read choice back and confirms if choice is invalid
-                    choice = Integer.parseInt(in.readUTF());
-
-                    // System.out.println("after choice: " + choice);
-
-                } catch (NumberFormatException e) {
-                    choice = 0;
-                }
-
                 switch (choice) {
+                    case 0:
+                        // printing Menu
+                        System.out.print(in.readUTF());
+
+                        // Read and send to server choice
+                        out.writeUTF(reader.readLine());
+
+                        try {
+                            // Read choice back and confirms if choice is invalid
+                            choice = Integer.parseInt(in.readUTF());
+
+                        } catch (NumberFormatException e) {
+                            choice = 0;
+                        }
+                        break;
                     case 1:
                         ChangePassword obj1 = new ChangePassword();
                         obj1.changePassword(in, out, reader);
@@ -49,10 +53,12 @@ public class AuthenticatedMenu {
                     case 2:
                         ChangeClientDirectory obj2 = new ChangeClientDirectory();
                         obj2.changeClientDirectory(in, out, reader);
+                        choice = 0;
                         break;
                     case 3:
                         ChangeServerDirectory obj3 = new ChangeServerDirectory();
                         obj3.changeServerDirectory(in, out, reader);
+                        choice = 0;
                         break;
                     case 4:
                         ipAndPort.configureIpAndPortAfterLogin(reader);
@@ -62,23 +68,26 @@ public class AuthenticatedMenu {
                         s.close();
 
                         System.out.println(ipAndPort);
-                        choice = 4;
                         break;
                     case 5:
                         CreateNewClientFolder obj5 = new CreateNewClientFolder();
                         obj5.createNewClientFolder(in, out, reader);
+                        choice = 0;
                         break;
                     case 6:
                         CreateNewServerFolder obj6 = new CreateNewServerFolder();
                         obj6.createNewServerFolder(in, out, reader);
+                        choice = 0;
                         break;
                     case 7:
                         DeleteClientFolderOrFile obj7 = new DeleteClientFolderOrFile();
                         obj7.deleteClientFolder(in, out, reader);
+                        choice = 0;
                         break;
                     case 8:
                         DeleteServerFolderOrFile obj8 = new DeleteServerFolderOrFile();
                         obj8.deleteServerFolder(in, out, reader);
+                        choice = 0;
                         break;
                     case 9:
                         // Receives new port to use for download
@@ -90,15 +99,17 @@ public class AuthenticatedMenu {
                         // Asks user which file he wants to download
                         DownloadHelper helper = new DownloadHelper();
                         helper.downloadHelper(in, out, reader, sFile);
-
+                        choice = 0;
                         break;
                     case 10:
                         ListClientFiles obj10 = new ListClientFiles();
                         obj10.listClientFiles(in, out);
+                        choice = 0;
                         break;
                     case 11:
                         ListServerFiles obj11 = new ListServerFiles();
                         obj11.listServerFiles(in);
+                        choice = 0;
                         break;
                     case 12:
                         // Receives new port to use for download
@@ -109,6 +120,7 @@ public class AuthenticatedMenu {
 
                         UploadHelper obj12 = new UploadHelper();
                         obj12.uploadHelper(in, out, reader, sFile);
+                        choice = 0;
                         break;
                     case 13:
                         break;

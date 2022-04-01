@@ -77,14 +77,10 @@ public class Client {
                     try {
                         // 1o passo
                         try {
-                            System.out.println("1");
                             sCommand = new Socket(ipAndPort.getPrimaryIp(), ipAndPort.getPrimaryCommandPort());
-                            System.out.println("2");
 
                         } catch (SocketException e) {
                             try {
-                                System.out.println("3");
-
                                 String auxIp = ipAndPort.getSecondaryIp();
                                 int auxPort = ipAndPort.getSecondaryCommandPort();
 
@@ -98,7 +94,6 @@ public class Client {
                                 System.out.println(ipAndPort.getSecondaryCommandPort());
 
                                 sCommand = new Socket(ipAndPort.getPrimaryIp(), ipAndPort.getPrimaryCommandPort());
-                                System.out.println("4");
 
                             } catch (SocketException se) {
                                 break;
@@ -118,8 +113,8 @@ public class Client {
                         System.out.println("Logged in!");
 
                         System.out.println(ipAndPort);
-                        AuthenticatedMenu authMenu = new AuthenticatedMenu();
 
+                        AuthenticatedMenu authMenu = new AuthenticatedMenu();
                         choice = authMenu.authenticatedMenu(sCommand, in, out, reader, ipAndPort);
 
                     } catch (UnknownHostException e) {

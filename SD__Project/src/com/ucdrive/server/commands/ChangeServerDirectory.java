@@ -8,7 +8,6 @@ import java.io.*;
 import java.nio.file.*;
 import java.util.*;
 
-
 public class ChangeServerDirectory {
     public ChangeServerDirectory() {
     }
@@ -37,7 +36,9 @@ public class ChangeServerDirectory {
                     newPath += list.get(i) + "/";
                 }
                 newPath += list.get(i);
-            }else{newPath = user.getLastSessionServer();}
+            } else {
+                newPath = user.getLastSessionServer();
+            }
 
             // Write to server
             out.writeUTF("Success!");
@@ -47,7 +48,7 @@ public class ChangeServerDirectory {
                 }
             }
 
-            conf.updateUsersFile(fileName, users);
+            conf.updateUsersFile(users);
             return;
         }
 
@@ -67,16 +68,17 @@ public class ChangeServerDirectory {
                 return;
             }
         }
-        ArrayList<String> clientFolders = getUserFoldersInClient(user.getLastSessionServer(), user.getUsername(), server);
+        ArrayList<String> clientFolders = getUserFoldersInClient(user.getLastSessionServer(), user.getUsername(),
+                server);
         for (String folder : clientFolders) {
             if (folder.equals(aux_list.get(0))) {
-                newPath = user.getLastSessionServer() + "/"+folder ;
+                newPath = user.getLastSessionServer() + "/" + folder;
                 for (User u : users.getUsers()) {
                     if (u.getUsername().equals(user.getUsername())) {
                         u.setLastSessionServer(newPath);
                     }
                 }
-                conf.updateUsersFile(fileName, users);
+                conf.updateUsersFile(users);
 
                 out.writeUTF("Success!");
 
@@ -84,7 +86,6 @@ public class ChangeServerDirectory {
                 return;
             }
         }
-
 
         out.writeUTF("The folder doesn't exist!");
         return;
@@ -96,7 +97,7 @@ public class ChangeServerDirectory {
         Path currentRelativePath = Paths.get("");
         String s = currentRelativePath.toAbsolutePath().toString();
 
-        String path = "/src/com/ucdrive/server/"+ server + "/Home/" + username;
+        String path = "/src/com/ucdrive/server/" + server + "/Home/" + username;
         String totalPath = Paths.get(s, path).toString();
         System.out.println(totalPath);
 

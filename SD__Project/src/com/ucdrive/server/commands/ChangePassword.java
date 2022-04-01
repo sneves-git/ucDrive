@@ -30,7 +30,7 @@ public class ChangePassword {
         // Rewrites to users.txt updated information
         String fileName = "src/com/ucdrive/configs/users.txt";
         UsersConfigsFile conf = new UsersConfigsFile();
-        conf.updateUsersFile(fileName, users);
+        conf.updateUsersFile(users);
 
     }
 

@@ -1,5 +1,9 @@
 package com.ucdrive.server.commands;
 
+import com.ucdrive.configs.UsersConfigsFile;
+import com.ucdrive.refactorLater.User;
+import com.ucdrive.refactorLater.Users;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -12,7 +16,7 @@ public class UploadHelper {
 	}
 
 	public void uploadHelper(String clientPath, String serverPath, String server, DataInputStream in,
-			DataOutputStream out, Socket sFile) {
+			DataOutputStream out, Socket sFile, User user, Users users) {
 
 		Path currentRelativePath = Paths.get("");
 		String path = currentRelativePath.toAbsolutePath().toString() + "/src/com/ucdrive/server/" + server + "/"
@@ -23,7 +27,7 @@ public class UploadHelper {
 			out.writeUTF(clientPath);
 			if (in.readUTF().equals("File exists")) {
 				String fileName = in.readUTF();
-				new UploadAFile(sFile, path, fileName);
+				new UploadAFile(sFile, path, fileName, user, users);
 			}
 
 		} catch (IOException e) {

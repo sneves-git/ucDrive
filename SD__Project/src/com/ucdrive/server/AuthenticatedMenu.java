@@ -1,6 +1,7 @@
 package com.ucdrive.server;
 
 import com.ucdrive.server.commands.*;
+import com.ucdrive.configs.UsersConfigsFile;
 import com.ucdrive.refactorLater.*;
 
 import java.io.*;
@@ -17,6 +18,8 @@ public class AuthenticatedMenu {
         int choice = 0;
 
         while (choice != 13) {
+            UsersConfigsFile conf = new UsersConfigsFile();
+            choice = user.getLastChoice();
             switch (choice) {
                 case -1:
                     out.writeUTF("\nInvalid option.\n\n"
@@ -68,45 +71,82 @@ public class AuthenticatedMenu {
                     }
                     break;
                 case 1:
+
+                    conf.updateLastChoice(1, user, users);
+
                     ChangePassword obj1 = new ChangePassword();
                     obj1.changePassword(user, users, in, out);
                     choice = 0;
+                    conf.updateLastChoice(0, user, users);
+
                     break;
                 case 2:
+                    System.out.println("4");
+
+                    conf.updateLastChoice(2, user, users);
+                    System.out.println("1");
                     ChangeClientDirectory obj2 = new ChangeClientDirectory();
-                    System.out.println(user.getClientPath());
+                    System.out.println("2");
+
+                    System.out.println(user.getLastSessionServer());
                     obj2.changeClientDirectory(user, users, in, out);
                     choice = 0;
+                    conf.updateLastChoice(0, user, users);
+
                     break;
                 case 3:
+                    conf.updateLastChoice(3, user, users);
+
                     ChangeServerDirectory obj3 = new ChangeServerDirectory();
                     obj3.changeServerDirectory(user, users, in, out, server);
                     choice = 0;
+                    conf.updateLastChoice(0, user, users);
+
                     break;
                 case 4:
+                    conf.updateLastChoice(4, user, users);
+
                     // Configure IPandPort of client
                     break;
                 case 5:
+                    conf.updateLastChoice(5, user, users);
+
                     CreateNewClientFolder obj5 = new CreateNewClientFolder();
                     obj5.createNewClientFolder(user.getClientPath(), out);
                     choice = 0;
+                    conf.updateLastChoice(0, user, users);
+
                     break;
                 case 6:
+                    conf.updateLastChoice(6, user, users);
+
                     CreateNewServerFolder obj6 = new CreateNewServerFolder();
                     obj6.createNewServerFolder(user.getLastSessionServer(), in, out, server);
                     choice = 0;
+                    conf.updateLastChoice(0, user, users);
+
                     break;
                 case 7:
+                    conf.updateLastChoice(7, user, users);
+
                     DeleteClientFolderOrFile obj7 = new DeleteClientFolderOrFile();
                     obj7.deleteClientFolder(user.getClientPath(), out);
                     choice = 0;
+                    conf.updateLastChoice(0, user, users);
+
                     break;
                 case 8:
+                    conf.updateLastChoice(8, user, users);
+
                     DeleteServerFolderOrFile obj8 = new DeleteServerFolderOrFile();
                     obj8.deleteServerFolder(user.getLastSessionServer(), in, out, server);
                     choice = 0;
+                    conf.updateLastChoice(0, user, users);
+
                     break;
                 case 9:
+                    conf.updateLastChoice(9, user, users);
+
                     try (ServerSocket folderSocket = new ServerSocket(0)) {
                         int filePort = folderSocket.getLocalPort();
                         System.out.println("A Escuta no Porto " + filePort);
@@ -124,7 +164,8 @@ public class AuthenticatedMenu {
                                 server);
 
                         if (!fileName.equals("File does not exist!")) {
-                            new DownloadAFile(clientSocket_, user.getLastSessionServer(), server, fileName);
+                            new DownloadAFile(clientSocket_, user.getLastSessionServer(), server, fileName, user, users,
+                                    0);
                         }
 
                     } catch (Exception e) {
@@ -132,18 +173,29 @@ public class AuthenticatedMenu {
                     }
 
                     choice = 0;
+
                     break;
                 case 10:
+                    conf.updateLastChoice(10, user, users);
+
                     ListClientFiles obj10 = new ListClientFiles();
                     obj10.listClientFiles(user.getClientPath(), out);
                     choice = 0;
+                    conf.updateLastChoice(0, user, users);
+
                     break;
                 case 11:
+                    conf.updateLastChoice(11, user, users);
+
                     ListServerFiles obj11 = new ListServerFiles();
                     obj11.listServerFiles(user.getLastSessionServer(), in, out, server);
                     choice = 0;
+                    conf.updateLastChoice(0, user, users);
+
                     break;
                 case 12:
+                    conf.updateLastChoice(12, user, users);
+
                     try (ServerSocket folderSocket = new ServerSocket(0)) {
                         int filePort = folderSocket.getLocalPort();
                         System.out.println("A Escuta no Porto " + filePort);
@@ -158,7 +210,7 @@ public class AuthenticatedMenu {
 
                         UploadHelper helper = new UploadHelper();
                         helper.uploadHelper(user.getClientPath(), user.getLastSessionServer(), server, in, out,
-                                clientSocket_);
+                                clientSocket_, user, users);
                     } catch (Exception e) {
                         System.out.println("Error with server socket: " + e);
                     }
@@ -166,6 +218,7 @@ public class AuthenticatedMenu {
                     choice = 0;
                     break;
                 case 13:
+                    conf.updateLastChoice(0, user, users);
                     // exit();
                     break;
             }
