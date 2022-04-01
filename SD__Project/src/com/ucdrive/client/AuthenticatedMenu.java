@@ -11,8 +11,8 @@ public class AuthenticatedMenu {
     }
 
     public int authenticatedMenu(Socket s, DataInputStream in, DataOutputStream out,
-                                 BufferedReader reader,
-                                 IpAndPort ipAndPort) throws IOException {
+            BufferedReader reader,
+            IpAndPort ipAndPort) throws IOException {
         // Checks if user's input is valid
         Socket sFile;
         int choice = 0;

@@ -41,14 +41,13 @@ public class DownloadAFile extends Thread {
         try {
             FileOutputStream fos = new FileOutputStream(clientPath + "/" + fileName);
             byte[] buf = new byte[buffsize];
-            
-            int length;
-            while((length = in.read(buf, 0, buf.length)) >0){
-                fos.write(buf, 0, length);
 
+            int length;
+            while ((length = in.read(buf, 0, buf.length)) > 0) {
+                fos.write(buf, 0, length);
             }
             fos.close();
-           
+
         } catch (IOException e) {
             e.printStackTrace();
         }

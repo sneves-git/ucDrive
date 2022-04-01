@@ -11,7 +11,7 @@ public class UploadAFile extends Thread {
 	private int buffsize;
 	private String ServerPath, fileName;
 
-	public UploadAFile(Socket aClientSocket, String ServerPath, String fileName){
+	public UploadAFile(Socket aClientSocket, String ServerPath, String fileName) {
 		try {
 			this.buffsize = 1024;
 			this.ServerPath = ServerPath;
@@ -32,9 +32,8 @@ public class UploadAFile extends Thread {
 			FileOutputStream fos = new FileOutputStream(ServerPath + "/" + fileName);
 			byte[] buf = new byte[buffsize];
 
-
 			int length;
-			while((length = in.read(buf, 0, buf.length)) >0){
+			while ((length = in.read(buf, 0, buf.length)) > 0) {
 				fos.write(buf, 0, length);
 
 			}

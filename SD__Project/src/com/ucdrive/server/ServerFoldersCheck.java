@@ -14,7 +14,7 @@ public class ServerFoldersCheck {
         for (User user : users) {
             Path currentRelativePath = Paths.get("");
             String s = currentRelativePath.toAbsolutePath().toString();
-            String path = "/src/com/ucdrive/server/" + server +"/Home";
+            String path = "/src/com/ucdrive/server/" + server + "/Home";
             String totalPath = Paths.get(s, path).toString() + "/" + user.getUsername() + "/";
 
             File file = new File(totalPath);

@@ -18,7 +18,6 @@ public class Client {
         String primaryFileName = "primary_server_ip_port.txt";
         String secondaryFileName = "secondary_server_ip_port.txt";
 
-
         // Read ip and port info
         try {
             File myObj = new File(path + primaryFileName);
@@ -53,7 +52,10 @@ public class Client {
             e1.printStackTrace();
         }
 
-        FirstMenu menu = new FirstMenu();
+        InputStreamReader input = new InputStreamReader(System.in);
+        BufferedReader reader = new BufferedReader(input);
+
+        FirstMenu menu = new FirstMenu(reader);
 
         do {
             choice = menu.chooseOption();
@@ -74,13 +76,13 @@ public class Client {
                 case 2:
                     try {
                         // 1o passo
-                        try{
+                        try {
                             System.out.println("1");
                             sCommand = new Socket(ipAndPort.getPrimaryIp(), ipAndPort.getPrimaryCommandPort());
                             System.out.println("2");
 
-                        }catch(SocketException e){
-                            try{
+                        } catch (SocketException e) {
+                            try {
                                 System.out.println("3");
 
                                 String auxIp = ipAndPort.getSecondaryIp();
@@ -98,7 +100,7 @@ public class Client {
                                 sCommand = new Socket(ipAndPort.getPrimaryIp(), ipAndPort.getPrimaryCommandPort());
                                 System.out.println("4");
 
-                            }catch(SocketException se){
+                            } catch (SocketException se) {
                                 break;
                             }
                         }
@@ -110,9 +112,6 @@ public class Client {
                         DataInputStream in = new DataInputStream(sCommand.getInputStream());
                         DataOutputStream out = new DataOutputStream(sCommand.getOutputStream());
 
-                        InputStreamReader input = new InputStreamReader(System.in);
-                        BufferedReader reader = new BufferedReader(input);
-
                         out.writeUTF("login");
                         Login login = new Login();
                         login.login_(in, out, reader);
@@ -121,7 +120,7 @@ public class Client {
                         System.out.println(ipAndPort);
                         AuthenticatedMenu authMenu = new AuthenticatedMenu();
 
-                        choice = authMenu.authenticatedMenu(sCommand,  in, out, reader, ipAndPort);
+                        choice = authMenu.authenticatedMenu(sCommand, in, out, reader, ipAndPort);
 
                     } catch (UnknownHostException e) {
                         System.out.println("Sock:" + e.getMessage());

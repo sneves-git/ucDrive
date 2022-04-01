@@ -9,18 +9,17 @@ import com.ucdrive.refactorLater.User;
 import com.ucdrive.refactorLater.Users;
 import com.ucdrive.server.commands.Login;
 
-
-public class FirstMenu{
+public class FirstMenu {
     public User user;
 
-    public FirstMenu(){
+    public FirstMenu() {
         this.user = null;
     }
 
-    public void firstMenu(Users users, DataInputStream in, DataOutputStream out, String server){
+    public void firstMenu(Users users, DataInputStream in, DataOutputStream out, String server) {
         int choice = -1;
         try {
-            do{
+            do {
                 // Receives signal that user wants to log in
                 String data = in.readUTF();
                 switch (data) {
@@ -36,8 +35,7 @@ public class FirstMenu{
                         break;
                 }
 
-
-            }while(choice != 13);
+            } while (choice != 13);
         } catch (EOFException e) {
             System.out.println("EOF:" + e);
         } catch (IOException e) {

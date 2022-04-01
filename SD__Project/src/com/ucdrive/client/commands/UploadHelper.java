@@ -10,9 +10,11 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 public class UploadHelper {
-	public UploadHelper(){}
+	public UploadHelper() {
+	}
 
-	public void uploadHelper(DataInputStream in, DataOutputStream out, BufferedReader reader, Socket sFile) throws IOException {
+	public void uploadHelper(DataInputStream in, DataOutputStream out, BufferedReader reader, Socket sFile)
+			throws IOException {
 		String clientPath = in.readUTF();
 
 		ServerHelperClass helper = new ServerHelperClass();
@@ -42,6 +44,5 @@ public class UploadHelper {
 		out.writeUTF("File does not exists");
 
 	}
-
 
 }

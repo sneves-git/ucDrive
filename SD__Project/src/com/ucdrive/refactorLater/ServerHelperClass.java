@@ -1,8 +1,10 @@
 package com.ucdrive.refactorLater;
 
 import java.util.*;
+
 import java.io.*;
 import java.net.*;
+import java.nio.file.*;
 
 public class ServerHelperClass {
 
@@ -129,4 +131,18 @@ public class ServerHelperClass {
 		}
 
 	}
+
+	public String convertPath(String path, String serverName) {
+		Path currentRelativePath = Paths.get("");
+		String s = currentRelativePath.toAbsolutePath().toString();
+		String p = "/src/com/ucdrive/server/" + serverName + "/";
+		String totalPath = Paths.get(s, p).toString();
+		System.out.println("path: " + path);
+		System.out.println("totalPath: " + totalPath);
+		path = path.replace(totalPath, "");
+		System.out.println("path: " + path);
+
+		return path;
+	}
+
 }

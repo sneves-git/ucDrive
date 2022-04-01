@@ -12,7 +12,8 @@ public class AuthenticatedMenu {
     public AuthenticatedMenu() {
     }
 
-    public int authenticatedMenu(User user, Users users, DataInputStream in, DataOutputStream out, String server) throws IOException {
+    public int authenticatedMenu(User user, Users users, DataInputStream in, DataOutputStream out, String server)
+            throws IOException {
         int choice = 0;
 
         while (choice != 13) {
@@ -119,9 +120,10 @@ public class AuthenticatedMenu {
                         System.out.println("CLIENT_SOCKET (created at accept())=" + clientSocket_);
 
                         DownloadHelper dh = new DownloadHelper();
-                        String fileName = dh.downloadHelper(user.getClientPath(), user.getLastSessionServer(), in, out, server);
+                        String fileName = dh.downloadHelper(user.getClientPath(), user.getLastSessionServer(), in, out,
+                                server);
 
-                        if(!fileName.equals("File does not exist!")){
+                        if (!fileName.equals("File does not exist!")) {
                             new DownloadAFile(clientSocket_, user.getLastSessionServer(), server, fileName);
                         }
 
@@ -155,7 +157,8 @@ public class AuthenticatedMenu {
                         System.out.println("CLIENT_SOCKET (created at accept())=" + clientSocket_);
 
                         UploadHelper helper = new UploadHelper();
-                        helper.uploadHelper(user.getClientPath(), user.getLastSessionServer(), server, in, out, clientSocket_);
+                        helper.uploadHelper(user.getClientPath(), user.getLastSessionServer(), server, in, out,
+                                clientSocket_);
                     } catch (Exception e) {
                         System.out.println("Error with server socket: " + e);
                     }

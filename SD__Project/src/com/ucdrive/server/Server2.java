@@ -32,7 +32,8 @@ public class Server2 {
         File file = new File(totalPath);
 
         String server1Ip = null;
-        int serverPort = -1, udpPortServer1 = -1, udpPortServer2 = -1, numero = 0;
+        int serverPort = -1, udpPortServer1 = -1, udpPortServer2 = -1, numero = 0, filePortServer2 = -1,
+                filePortServer1 = -1;
         Scanner sc = null;
         try {
             sc = new Scanner(file);
@@ -52,6 +53,12 @@ public class Server2 {
             if (sc.hasNextLine()) {
                 udpPortServer1 = Integer.parseInt(sc.nextLine());
             }
+            if (sc.hasNextLine()) {
+                filePortServer2 = Integer.parseInt(sc.nextLine());
+            }
+            if (sc.hasNextLine()) {
+                filePortServer1 = Integer.parseInt(sc.nextLine());
+            }
 
         } catch (IOException e) {
             System.out.println("Listen:" + e.getMessage());
@@ -64,12 +71,16 @@ public class Server2 {
 
         // UDP connection
         System.out.println("Socket Datagram à escuta no porto " + udpPortServer2);
+        String a = currentRelativePath.toAbsolutePath().toString();
+        String p = "/src/com/ucdrive/server/" + server + "/Home/";
+        String startDir = Paths.get(a, p).toString();
 
         ServerHelperClass helper = new ServerHelperClass();
         String status = helper.determineIfPrimaryOrSecondary(udpPortServer1, server1Ip);
         if (status.equals("Primary")) {
             System.out.println("sou primario");
             new PrimaryHeartbeats(udpPortServer2);
+            new PrimaryFileStorage(filePortServer2, filePortServer1, server1Ip, startDir, server);
 
             // TCP connection
             System.out.println("A Escuta no Porto " + serverPort);
@@ -88,10 +99,14 @@ public class Server2 {
 
         } else {
 
-            Thread thread = new SecondaryHeartbeats(udpPortServer1, server1Ip);
-            thread.join();
+            Thread heartbeatThread = new SecondaryHeartbeats(udpPortServer1, server1Ip);
+            Thread fileThread = new SecondaryFileStorage(filePortServer2, filePortServer1, server1Ip, server);
+            heartbeatThread.join();
+            fileThread.join();
+
             System.out.println("SOU PRIMARIO DEPOIS DE O OUTRO TER morrido");
             new PrimaryHeartbeats(udpPortServer2);
+            new PrimaryFileStorage(filePortServer2, filePortServer1, server1Ip, startDir, server);
 
             // TCP connection
             System.out.println("A Escuta no Porto " + serverPort);
