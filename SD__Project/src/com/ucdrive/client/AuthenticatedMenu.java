@@ -85,6 +85,7 @@ public class AuthenticatedMenu {
                         choice = 0;
                         break;
                     case 7:
+
                         DeleteClientFolderOrFile obj7 = new DeleteClientFolderOrFile();
                         obj7.deleteClientFolder(in, out, reader);
                         choice = 0;
@@ -108,12 +109,12 @@ public class AuthenticatedMenu {
                         break;
                     case 10:
                         ListClientFiles obj10 = new ListClientFiles();
-                        obj10.listClientFiles(in, out);
+                        obj10.listClientFiles(in, out, true);
                         choice = 0;
                         break;
                     case 11:
                         ListServerFiles obj11 = new ListServerFiles();
-                        obj11.listServerFiles(in);
+                        obj11.listServerFiles(in, true);
                         choice = 0;
                         break;
                     case 12:
@@ -128,6 +129,7 @@ public class AuthenticatedMenu {
                         choice = 0;
                         break;
                     case 13:
+                        System.out.println(ConsoleColors.GREEN + "Logging out...\n" + ConsoleColors.RESET);
                         break;
                 }
             } while (choice != 13 && choice != 4 && choice != 1);

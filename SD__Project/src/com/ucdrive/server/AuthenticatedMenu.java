@@ -127,6 +127,9 @@ public class AuthenticatedMenu {
 
                     break;
                 case 7:
+                    ListClientFiles obj14 = new ListClientFiles();
+                    obj14.listClientFiles(user.getClientPath(), out);
+
                     conf.updateLastChoice(7, user, users);
 
                     DeleteClientFolderOrFile obj7 = new DeleteClientFolderOrFile();
@@ -136,6 +139,9 @@ public class AuthenticatedMenu {
 
                     break;
                 case 8:
+                    ListServerFiles obj15 = new ListServerFiles();
+                    obj15.listServerFiles(user.getLastSessionServer(), in, out, server);
+
                     conf.updateLastChoice(8, user, users);
 
                     DeleteServerFolderOrFile obj8 = new DeleteServerFolderOrFile();

@@ -7,7 +7,6 @@ public class DeleteServerFolderOrFile {
     public DeleteServerFolderOrFile(){}
 
     public void deleteServerFolder(String serverPath, DataInputStream in, DataOutputStream out, String server) throws IOException  {
-        System.out.println("--------- Delete server Folder/File --------");
         Path currentRelativePath = Paths.get("");
         String path = currentRelativePath.toAbsolutePath().toString() + "/src/com/ucdrive/server/"+ server + "/" + serverPath;
 
@@ -20,13 +19,13 @@ public class DeleteServerFolderOrFile {
         List<String> aux_list = new ArrayList<>(Arrays.asList(command.split(" ")));
         // If input is incorrect ex:"mkdir folder (something)" -> error
         if (aux_list.size() > 2) {
-            System.out.println("Wrong input!");
+            out.writeUTF("Wrong input!");
             return;
         } else if (aux_list.size() == 2) {
             if (aux_list.get(0).equals("del")) {
                 aux_list.remove(0);
             } else {
-                System.out.println("Wrong input!");
+                out.writeUTF("Wrong input!");
                 return;
             }
         }
@@ -34,9 +33,9 @@ public class DeleteServerFolderOrFile {
         File f = new File(path + "/" + aux_list.get(0));
         if (f.exists()) {
             f.delete();
-            System.out.println("Success!");
+            out.writeUTF("Success!");
         } else {
-            System.out.println("The folder/file doesn't exist or you are in the wrong directory.");
+            out.writeUTF("The folder/file doesn't exist or you are in the wrong directory.");
         }
     }
 }

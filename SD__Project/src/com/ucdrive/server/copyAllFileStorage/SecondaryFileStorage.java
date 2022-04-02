@@ -44,17 +44,49 @@ public class SecondaryFileStorage extends Thread {
         }
 
         try (DatagramSocket ds = new DatagramSocket(myPort)) {
-            System.out.println("[UDP for all fileStorage] IP="+ds.getInetAddress() +" Port="+ myPort);
-
             sendAndReceiveAck("Start", ds);
             receiveAndSendAck(ds, totalPath);
-
-            ds.close();
-
         } catch (SocketException se) {
             se.printStackTrace();
         }
 
+    }
+
+    private boolean receiveAndSendAck_(DatagramSocket ds, String word) {
+        String ack = null;
+        try {
+            // Receive Ack
+            byte[] rbuf = new byte[bufsize];
+            dr = new DatagramPacket(rbuf, rbuf.length);
+            ds.receive(dr);
+            ByteArrayInputStream bais_ = new ByteArrayInputStream(rbuf, 0, dr.getLength());
+            DataInputStream dis_ = new DataInputStream(bais_);
+            ack = dis_.readUTF();
+
+            try {
+                this.ia = InetAddress.getByName(host);
+            } catch (UnknownHostException e1) {
+                e1.printStackTrace();
+            }
+
+            if (ack.equals(word)) {
+
+                // Send byte array
+                ByteArrayOutputStream baos_ = new ByteArrayOutputStream();
+                DataOutputStream dos_ = new DataOutputStream(baos_);
+                dos_.writeUTF(ack);
+
+                byte[] buf = baos_.toByteArray();
+                dp = new DatagramPacket(buf, buf.length, ia, filePort);
+                ds.send(dp);
+
+                return true;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public void sendAndReceiveAck(String str, DatagramSocket ds) {
@@ -91,19 +123,21 @@ public class SecondaryFileStorage extends Thread {
             ByteArrayInputStream bais = new ByteArrayInputStream(rbuf, 0, dr.getLength());
             DataInputStream dis = new DataInputStream(bais);
             ack = dis.readUTF();
-
+            System.out.println("ack:" + ack);
             if (fileExists && ack.equals(md5)) {
                 // Send byte array
+                System.out.println("FIle exists ");
+
                 baos = new ByteArrayOutputStream();
                 dos = new DataOutputStream(baos);
                 dos.writeUTF(ack);
                 byte[] buf = baos.toByteArray();
                 dp = new DatagramPacket(buf, buf.length, ia, filePort);
                 ds.send(dp);
-            } else if ((fileExists && !ack.equals(md5))
-                    || (!fileExists)) {
+            } else{
                 baos = new ByteArrayOutputStream();
                 dos = new DataOutputStream(baos);
+                System.out.println("FIle dowsn't exist ");
                 dos.writeUTF("File doesn't exist!");
                 byte[] buf = baos.toByteArray();
                 dp = new DatagramPacket(buf, buf.length, ia, filePort);
@@ -112,8 +146,9 @@ public class SecondaryFileStorage extends Thread {
                 receiveFileViaUDP(path, ack, ds);
             }
         } catch (Exception e) {
-            // receiveAndSendAck(ds);
+            System.out.println("CATCH");
         }
+        System.out.println("EXITS ");
 
     }
 
@@ -125,12 +160,19 @@ public class SecondaryFileStorage extends Thread {
                 for (File file : files) {
                     dict.put(file.getPath(), "0");
                     if (file.isDirectory()) {
-                        initializeHashtable(dict, file.getPath());
+                        dict = initializeHashtable(dict, file.getPath());
                     }
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+
+        Enumeration<String> e = dict.keys();
+
+        while (e.hasMoreElements()) {
+            String key = e.nextElement();
+            System.out.println("KEY: " + key + " VALUE: " + dict.get(key));
         }
 
         return dict;
@@ -191,19 +233,27 @@ public class SecondaryFileStorage extends Thread {
                     fos.write(rbuf, 0, length);
                 }
             } while (true);
+            System.out.println("TERMINEI ALBERTO");
             fos.close();
 
             try {
                 MD5 obj = new MD5();
                 if (!(obj.md5(s).equals(originalMD5))) {
+                    System.out.println("ALBERTO MAL");
+
                     sendAck(ds, "Not done!");
                     receiveFileViaUDP(path, originalMD5, ds);
                 } else {
+                    System.out.println("ALBERTO BEM");
+
                     sendAck(ds, "Done!");
                 }
             } catch (NoSuchAlgorithmException e) {
+                System.out.println("ALBERTO MAL");
                 e.printStackTrace();
             } catch (IOException e) {
+                System.out.println("ALBERTO MAL");
+
                 e.printStackTrace();
             }
 
@@ -216,6 +266,7 @@ public class SecondaryFileStorage extends Thread {
         Path currentRelativePath = Paths.get("");
 
         Hashtable<String, String> my_dict = new Hashtable<String, String>();
+        my_dict.clear();
         my_dict = initializeHashtable(my_dict, startDir);
 
         String ack = null;
@@ -255,6 +306,7 @@ public class SecondaryFileStorage extends Thread {
                         f.mkdir();
                     }
                     sendAck(ds, folderPath);
+
                 }
                 // receive word "File"
                 else if (ack.equals("File")) {
@@ -287,7 +339,6 @@ public class SecondaryFileStorage extends Thread {
             } while (!ack.equals("Finished"));
 
         } catch (Exception e) {
-            // receiveAndSendAck(ds); ?
         }
         sendAck(ds, "Finished");
         removeUnusedDirectories(my_dict);

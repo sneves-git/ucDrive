@@ -80,7 +80,7 @@ public class IpAndPort {
 
         } while (aux == -1);
         secondaryCommandPort = aux;
-        System.out.println("------------------------------------------------------\n");
+        System.out.println(ConsoleColors.GREEN + "Primary and secondary ip and port's changed successfully!" + ConsoleColors.RESET + "\n------------------------------------------------------\n");
 
     }
 
@@ -127,7 +127,7 @@ public class IpAndPort {
         } while (aux == -1);
         secondaryCommandPort = aux;
 
-        System.out.println("------------------------------------------------------\n");
+        System.out.println(ConsoleColors.GREEN + "Primary and secondary ip and port's changed successfully!" + ConsoleColors.RESET + "\n------------------------------------------------------\n");
 
     }
 

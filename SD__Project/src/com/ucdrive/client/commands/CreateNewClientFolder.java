@@ -18,8 +18,8 @@ public class CreateNewClientFolder {
         List<String> aux_list = new ArrayList<String>(Arrays.asList(command.split(" ")));
         // If input is incorrect ex:"mkdir folder (something)" -> error
         if (aux_list.size() > 2) {
-          
-            System.out.println("Wrong input!");
+
+            System.out.println(ConsoleColors.RED + "Wrong input! Please use: mkdir <folderName> OR <folderName>!" + ConsoleColors.RESET);
 
             return;
         } else if (aux_list.size() == 2) {
@@ -33,11 +33,11 @@ public class CreateNewClientFolder {
 
         File f = new File(ClientPath + "/" + aux_list.get(0));
         if (f.mkdir()) {
-            System.out.println(ConsoleColors.GREEN + "Created folder" + aux_list.get(0) + " successfully!" + ConsoleColors.RESET);
+            System.out.println(ConsoleColors.GREEN + "Created folder " + aux_list.get(0) + " successfully!" + ConsoleColors.RESET);
         } else {
-            System.out.println(ConsoleColors.RED + "Failed to create folder" + aux_list.get(0) + "!" + ConsoleColors.RESET);
+            System.out.println(ConsoleColors.RED + "Failed to create folder " + aux_list.get(0) + "!" + ConsoleColors.RESET);
         }
-        System.out.println("\n-------------------------------------------");
+        System.out.println("-------------------------------------------\n");
 
     }
 }

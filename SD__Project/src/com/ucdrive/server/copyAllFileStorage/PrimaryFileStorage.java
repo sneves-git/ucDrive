@@ -33,15 +33,9 @@ public class PrimaryFileStorage extends Thread {
     public void run() {
 
         try (DatagramSocket ds = new DatagramSocket(myPort)) {
-            System.out.println("[UDP for all fileStorage] IP="+ds.getInetAddress() +" Port="+ myPort);
-
             receiveAndSendAck(ds, "Start");
             getAllDirectoryFiles(startDir, ds);
             sendAndReceiveAck("Finished", ds, false);
-
-            dos.close();
-            baos.close();
-            ds.close();
         } catch (SocketException se) {
             se.printStackTrace();
         } catch (NoSuchAlgorithmException nsa) {
@@ -62,6 +56,7 @@ public class PrimaryFileStorage extends Thread {
         try {
             if (files != null && files.length > 0) {
                 for (File file : files) {
+                    System.out.println("filename: " + file.getName());
                     ServerHelperClass shc = new ServerHelperClass();
 
                     // Check if the file is a directory
@@ -76,20 +71,27 @@ public class PrimaryFileStorage extends Thread {
                         getAllDirectoryFiles(file.getPath(), ds);
                     } else {
                         // Send the word "File"
+                        System.out.println("antes file");
                         sendAndReceiveAck("File", ds, false);
 
                         // Send File Path
+                        System.out.println("antes path");
+
                         sendAndReceiveAck(shc.convertPath(file.getPath(), this.server), ds, false);
 
                         // Send file with MD5
                         MD5 obj = new MD5();
+                        System.out.println("antes md5");
 
                         String md5 = obj.md5(file.getPath());
                         ackReturn = sendAndReceiveAck(md5, ds, true);
+                        System.out.println("ackReturn: " + ackReturn);
                         if (ackReturn.equals("File doesn't exist!")) {
+                            System.out.println("ficheiro n existe");
+
                             String ack = null;
                             do {
-                                sendFile(file.getPath(), ds, md5);
+                                sendFile(file.getPath(), ds);
 
                                 byte[] rbuf = new byte[bufsize];
                                 dr = new DatagramPacket(rbuf, rbuf.length);
@@ -97,6 +99,7 @@ public class PrimaryFileStorage extends Thread {
                                 ByteArrayInputStream bais = new ByteArrayInputStream(rbuf, 0, dr.getLength());
                                 DataInputStream dis = new DataInputStream(bais);
                                 ack = dis.readUTF();
+                                System.out.println("ACK FINAL: " + ack);
                             } while (!ack.equals("Done!"));
 
                         }
@@ -110,7 +113,7 @@ public class PrimaryFileStorage extends Thread {
         }
     }
 
-    private void sendFile(String filePath, DatagramSocket ds, String md5Primary) throws NoSuchAlgorithmException {
+    private void sendFile(String filePath, DatagramSocket ds) throws NoSuchAlgorithmException {
         try {
             int nread;
             byte[] buf = new byte[bufsize];
@@ -129,6 +132,7 @@ public class PrimaryFileStorage extends Thread {
                 e.printStackTrace();
             }
             fis.close();
+            System.out.println("TERMINEI ALBERTO");
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -157,7 +161,7 @@ public class PrimaryFileStorage extends Thread {
                 // Send byte array
                 baos = new ByteArrayOutputStream();
                 dos = new DataOutputStream(baos);
-                dos.writeUTF("OLA");
+                dos.writeUTF("ACK");
 
                 byte[] buf = baos.toByteArray();
                 dp = new DatagramPacket(buf, buf.length, ia, filePort);
@@ -166,7 +170,6 @@ public class PrimaryFileStorage extends Thread {
 
         } catch (Exception e) {
             e.printStackTrace();
-            // receiveAndSendAck(ds);
         }
     }
 
@@ -193,7 +196,7 @@ public class PrimaryFileStorage extends Thread {
             return ack;
 
         } catch (Exception e) {
-            // sendAndReceiveAck(str, ds, file);
+            System.out.println("CATCH");
         }
         return ack;
     }

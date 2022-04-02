@@ -13,9 +13,12 @@ public class ListServerFiles {
             throws IOException {
         ServerHelperClass obj = new ServerHelperClass();
 
+        serverPath = serverPath.replace("/", "\\");
         Path currentRelativePath = Paths.get("");
-        String path = currentRelativePath.toAbsolutePath().toString() + "/src/com/ucdrive/server/" + server + "/"
+        String path = currentRelativePath.toAbsolutePath().toString() + "\\src\\com\\ucdrive\\server\\" + server + "\\"
                 + serverPath;
+
+        out.writeUTF(obj.convertPath(path, server));
 
         obj.listFoldersAndFiles(out, path, false);
     }

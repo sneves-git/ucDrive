@@ -1,5 +1,7 @@
 package com.ucdrive.client.commands;
 
+import com.ucdrive.utils.ConsoleColors;
+
 import java.io.*;
 import java.net.Socket;
 
@@ -37,7 +39,6 @@ public class DownloadAFile extends Thread {
             }
             fos.close();
             socket.close();
-
         } catch (IOException e) {
             e.printStackTrace();
         }

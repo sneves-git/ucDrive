@@ -28,6 +28,9 @@ public class FirstMenu {
                     choice = Integer.parseInt(firstReader.readLine());
 
                     if (choice > 0 && choice < 4) {
+                        if (choice == 3){
+                            System.out.println(ConsoleColors.GREEN + "Shutting down program!" + ConsoleColors.RESET);
+                        }
                         break;
                     } else {
                         System.out.print(ConsoleColors.RED + "Invalid option.\n\n" + ConsoleColors.RESET

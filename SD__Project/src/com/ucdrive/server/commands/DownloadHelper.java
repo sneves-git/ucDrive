@@ -30,9 +30,9 @@ public class DownloadHelper {
 			// Joins all existing files in a string
 			files = shc.returnFilesList(path);
 			for (int i = 0; i < files.size(); ++i) {
-				s += "- " + files.get(i) + "\n";
+				s += "[File] " + files.get(i) + "\n";
 			}
-			s += "choice: ";
+			s += "Choice: ";
 
 			// Sends menu of existing files
 			out.writeUTF(s);
