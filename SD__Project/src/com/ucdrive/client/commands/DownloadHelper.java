@@ -21,6 +21,7 @@ public class DownloadHelper {
 
             // File's name
             if (in.readUTF().equals("File exists!")) {
+
 				// Creates thread to handle file download concurrently
 				new DownloadAFile(sFile, clientPath, fileName);
 			}

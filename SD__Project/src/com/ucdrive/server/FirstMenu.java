@@ -5,9 +5,8 @@ import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
 
-import com.ucdrive.configs.UsersConfigsFile;
-import com.ucdrive.refactorLater.User;
-import com.ucdrive.refactorLater.Users;
+import com.ucdrive.utils.User;
+import com.ucdrive.utils.Users;
 import com.ucdrive.server.commands.Login;
 
 public class FirstMenu {
@@ -47,9 +46,7 @@ public class FirstMenu {
 
             } while (choice != 13);
         } catch (EOFException e) {
-            System.out.println("EOF:" + e);
         } catch (IOException e) {
-            System.out.println("IO:" + e);
         }
     }
 }

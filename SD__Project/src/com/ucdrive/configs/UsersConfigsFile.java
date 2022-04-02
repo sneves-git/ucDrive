@@ -1,7 +1,7 @@
 package com.ucdrive.configs;
 
-import com.ucdrive.refactorLater.User;
-import com.ucdrive.refactorLater.Users;
+import com.ucdrive.utils.User;
+import com.ucdrive.utils.Users;
 
 import java.io.*;
 import java.util.Scanner;
@@ -29,8 +29,6 @@ public class UsersConfigsFile {
                 User user = new User(array_info[0], array_info[1], array_info[2], array_info[3], array_info[4],
                         array_info[5], array_info[6], array_info[7], Integer.parseInt(array_info[8]));
                 (users.getUsers()).add(user);
-
-                System.out.println(user);
             }
             myReader.close();
         } catch (FileNotFoundException e) {

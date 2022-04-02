@@ -1,8 +1,8 @@
 package com.ucdrive.server.commands;
 
 import com.ucdrive.configs.UsersConfigsFile;
-import com.ucdrive.refactorLater.User;
-import com.ucdrive.refactorLater.Users;
+import com.ucdrive.utils.User;
+import com.ucdrive.utils.Users;
 
 import java.io.*;
 import java.io.FileOutputStream;
@@ -43,15 +43,9 @@ public class UploadAFile extends Thread {
 			int length;
 			while ((length = in.read(buf, 0, buf.length)) > 0) {
 				fos.write(buf, 0, length);
-				try {
-					Thread.sleep(10000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
 			}
 			fos.close();
+			socket.close();
 
 			UsersConfigsFile conf = new UsersConfigsFile();
 			conf.updateLastChoice(0, user, users);

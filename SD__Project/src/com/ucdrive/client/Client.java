@@ -1,6 +1,7 @@
 package com.ucdrive.client;
 
 import com.ucdrive.client.commands.Login;
+import com.ucdrive.utils.ConsoleColors;
 
 import java.util.*;
 import java.io.*;
@@ -62,12 +63,7 @@ public class Client {
             switch (choice) {
                 case 1:
                     try {
-                        System.out.println(ipAndPort);
-
                         ipAndPort.configureIpAndPortBeforeLogin();
-
-                        System.out.println(ipAndPort);
-
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     }
@@ -88,20 +84,14 @@ public class Client {
                                 ipAndPort.setSecondaryCommandPort(ipAndPort.getPrimaryCommandPort());
                                 ipAndPort.setPrimaryIp(auxIp);
                                 ipAndPort.setPrimaryCommandPort(auxPort);
-                                System.out.println(ipAndPort.getPrimaryIp());
-                                System.out.println(ipAndPort.getPrimaryCommandPort());
-                                System.out.println(ipAndPort.getSecondaryIp());
-                                System.out.println(ipAndPort.getSecondaryCommandPort());
 
                                 sCommand = new Socket(ipAndPort.getPrimaryIp(), ipAndPort.getPrimaryCommandPort());
 
                             } catch (SocketException se) {
+                                System.out.println(ConsoleColors.RED + "Either try new server configuration or servers are down!\n" + ConsoleColors.RESET);
                                 break;
                             }
                         }
-
-                        System.out.println("SERVER PORT = " + ipAndPort.getPrimaryCommandPort());
-                        System.out.println("SOCKET=" + sCommand);
 
                         // 2o passo
                         DataInputStream in = new DataInputStream(sCommand.getInputStream());
@@ -110,9 +100,6 @@ public class Client {
                         out.writeUTF("login");
                         Login login = new Login();
                         login.login_(in, out, reader);
-                        System.out.println("Logged in!");
-
-                        System.out.println(ipAndPort);
 
                         AuthenticatedMenu authMenu = new AuthenticatedMenu();
                         choice = authMenu.authenticatedMenu(sCommand, in, out, reader, ipAndPort);

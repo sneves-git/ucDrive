@@ -1,8 +1,8 @@
 package com.ucdrive.server.commands;
 
 import com.ucdrive.configs.UsersConfigsFile;
-import com.ucdrive.refactorLater.User;
-import com.ucdrive.refactorLater.Users;
+import com.ucdrive.utils.User;
+import com.ucdrive.utils.Users;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -29,6 +29,7 @@ public class UploadHelper {
 				String fileName = in.readUTF();
 				new UploadAFile(sFile, path, fileName, user, users);
 			}else{
+				sFile.close();
 				UsersConfigsFile conf = new UsersConfigsFile();
 				conf.updateLastChoice(0, user, users);
 			}

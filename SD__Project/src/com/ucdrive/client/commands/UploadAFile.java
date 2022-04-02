@@ -42,6 +42,7 @@ public class UploadAFile extends Thread {
                 e.printStackTrace();
             }
             fis.close();
+            socket.close();
 
         } catch (IOException e) {
             e.printStackTrace();

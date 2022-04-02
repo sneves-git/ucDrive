@@ -2,7 +2,7 @@ package com.ucdrive.server;
 
 import com.ucdrive.server.commands.*;
 import com.ucdrive.configs.UsersConfigsFile;
-import com.ucdrive.refactorLater.*;
+import com.ucdrive.utils.*;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -22,7 +22,8 @@ public class AuthenticatedMenu {
         while (choice != 13) {
             switch (choice) {
                 case -1:
-                    out.writeUTF("\nInvalid option.\n\n"
+                    out.writeUTF(ConsoleColors.RED + "Invalid option.\n\n" + ConsoleColors.RESET
+                            + "Choose one of the following options:\n"
                             + "\t1  - Change password\n"
                             + "\t2  - Change client's directory\n"
                             + "\t3  - Change server's directory\n"
@@ -40,13 +41,16 @@ public class AuthenticatedMenu {
                     try {
                         choice = Integer.parseInt(in.readUTF());
                         out.writeUTF(String.valueOf(choice));
+
+                        if(choice < 1 || choice > 13){
+                            choice = -1;
+                        }
                     } catch (NumberFormatException e) {
                         choice = -1;
                         out.writeUTF("Invalid option.");
                     }
                     break;
                 case 0:
-
                     out.writeUTF("Choose one of the following options:\n"
                             + "\t1  - Change password\n"
                             + "\t2  - Change client's directory\n"
@@ -60,12 +64,16 @@ public class AuthenticatedMenu {
                             + "\t10 - List client files\n"
                             + "\t11 - List server files\n"
                             + "\t12 - Upload a file\n"
-                            + "\t13 - Exit\n"
+                            + "\t13 - Logout\n"
                             + "Choice: ");
 
                     try {
                         choice = Integer.parseInt(in.readUTF());
                         out.writeUTF(String.valueOf(choice));
+
+                        if(choice < 1 || choice > 13){
+                            choice = -1;
+                        }
                     } catch (NumberFormatException e) {
                         choice = -1;
                         out.writeUTF("Invalid option.");
@@ -85,7 +93,6 @@ public class AuthenticatedMenu {
                     conf.updateLastChoice(2, user, users);
                     ChangeClientDirectory obj2 = new ChangeClientDirectory();
 
-                    System.out.println(user.getLastSessionServer());
                     obj2.changeClientDirectory(user, users, in, out);
                     choice = 0;
                     conf.updateLastChoice(0, user, users);
@@ -142,11 +149,7 @@ public class AuthenticatedMenu {
 
                     try (ServerSocket folderSocket = new ServerSocket(0)) {
                         int filePort = folderSocket.getLocalPort();
-                        System.out.println("A Escuta no Porto " + filePort);
-
                         out.writeUTF(Integer.toString(filePort));
-
-                        System.out.println("LISTEN SOCKET=" + folderSocket);
 
                         Socket clientSocket_ = folderSocket.accept(); // BLOQUEANTE
 
@@ -208,6 +211,9 @@ public class AuthenticatedMenu {
                 case 13:
                     conf.updateLastChoice(0, user, users);
                     // exit();
+                    break;
+                default:
+                    choice = -1;
                     break;
             }
         }

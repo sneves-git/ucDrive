@@ -1,7 +1,7 @@
 package com.ucdrive.server.commands;
 
-import com.ucdrive.refactorLater.Users;
-import com.ucdrive.refactorLater.User;
+import com.ucdrive.utils.Users;
+import com.ucdrive.utils.User;
 
 import java.io.*;
 import java.nio.file.*;
@@ -36,7 +36,7 @@ public class Login {
 			}
 		}
 
-		return my_user;
+		return null;
 	}
 
 	@Override

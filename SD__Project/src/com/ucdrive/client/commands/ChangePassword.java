@@ -1,5 +1,7 @@
 package com.ucdrive.client.commands;
 
+import com.ucdrive.utils.ConsoleColors;
+
 import java.io.*;
 
 public class ChangePassword {
@@ -10,7 +12,7 @@ public class ChangePassword {
     }
 
     public void changePassword(DataInputStream in, DataOutputStream out, BufferedReader reader) throws IOException {
-        System.out.println("------------ Change password -------------");
+        System.out.println("\n------------ Change password -------------");
         String data = "Invalid password!";
         do {
             System.out.print("Current password: ");
@@ -23,6 +25,10 @@ public class ChangePassword {
 
             // Server sends ACK saying if password exists or not
             data = in.readUTF();
+
+            if(data.equals("Invalid password!")){
+                System.out.println(ConsoleColors.RED + "Wrong password!" + ConsoleColors.RESET);
+            }
         } while (data.equals("Invalid password!"));
 
         System.out.print("New password: ");
@@ -34,6 +40,8 @@ public class ChangePassword {
         out.writeUTF(password);
 
         // Receives ACK
-        System.out.println(in.readUTF());
+        System.out.println(ConsoleColors.GREEN + in.readUTF() + ConsoleColors.RESET);
+        System.out.println("-----------------------------------------\n");
+
     }
 }

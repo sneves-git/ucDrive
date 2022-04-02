@@ -1,6 +1,7 @@
 package com.ucdrive.client;
 
 import com.ucdrive.client.commands.*;
+import com.ucdrive.utils.ConsoleColors;
 
 import java.io.*;
 import java.net.Socket;
@@ -21,15 +22,11 @@ public class AuthenticatedMenu {
         if (!option.equals("Menu!")) {
             try {
                 choice = Integer.parseInt(option);
-                System.out.println(
-                        "----------------------------------------------------------------------------------------");
-                System.out.println(
-                        "Due to an error in the last session your previous operation did not finish successfully!");
+                System.out.println(ConsoleColors.RED +"Due to an error in the last session your previous operation did not finish successfully!" + ConsoleColors.RESET);
             } catch (NumberFormatException e) {
                 choice = 0;
             }
         }
-        System.out.println("_CHOICE: " + choice);
 
         try {
             do {
@@ -43,38 +40,32 @@ public class AuthenticatedMenu {
                     try {
                         // Read choice back and confirms if choice is invalid
                         choice = Integer.parseInt(in.readUTF());
-
+                        if(choice < 1 || choice > 13){
+                            choice = 0;
+                        }
                     } catch (NumberFormatException e) {
                         choice = 0;
                     }
                 }
+
                 switch (choice) {
 
                     case 1:
-                        System.out.println("ENTREI NO 1");
                         ChangePassword obj1 = new ChangePassword();
                         obj1.changePassword(in, out, reader);
-                        System.out.println("SAI NO 1");
-
                         break;
 
                     case 2:
-                        System.out.println("ENTREI NO 2");
-
                         ChangeClientDirectory obj2 = new ChangeClientDirectory();
                         obj2.changeClientDirectory(in, out, reader);
                         choice = 0;
                         break;
                     case 3:
-                        System.out.println("ENTREI NO 3");
-
                         ChangeServerDirectory obj3 = new ChangeServerDirectory();
                         obj3.changeServerDirectory(in, out, reader);
                         choice = 0;
                         break;
                     case 4:
-                        System.out.println("ENTREI NO 4");
-
                         ipAndPort.configureIpAndPortAfterLogin(reader);
 
                         in.close();

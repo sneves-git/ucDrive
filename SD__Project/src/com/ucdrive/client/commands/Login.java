@@ -1,5 +1,7 @@
 package com.ucdrive.client.commands;
 
+import com.ucdrive.utils.ConsoleColors;
+
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -14,7 +16,7 @@ public class Login {
     }
 
     public void login_(DataInputStream in, DataOutputStream out, BufferedReader reader) throws IOException {
-        System.out.println("------------ Login -------------");
+        System.out.println("\n------------ Login -------------");
         String data = "Username does not exist!";
         do {
             System.out.print("Username: ");
@@ -27,6 +29,9 @@ public class Login {
 
             // Server sends ACK saying if user exists or not
             data = in.readUTF();
+            if(data.equals("Username does not exist!")){
+                System.out.println(ConsoleColors.RED + data + ConsoleColors.RESET);
+            }
 
         } while (data.equals("Username does not exist!"));
 
@@ -42,11 +47,13 @@ public class Login {
             // Server sends ACK saying if password exists or not
             data = in.readUTF();
 
-        } while (data.equals("Invalid password!"));
-        System.out.println();
+            if(data.equals("Invalid password!")){
+                System.out.println(ConsoleColors.RED + data + ConsoleColors.RESET);
+            }
 
-        // VER ISTO QUE FALTA!
-        // -------------------
-        // clientsApplication(user, users);
+        } while (data.equals("Invalid password!"));
+        System.out.println(ConsoleColors.GREEN + "Logged in!" + ConsoleColors.RESET +
+                            "\n--------------------------------\n");
+
     }
 }

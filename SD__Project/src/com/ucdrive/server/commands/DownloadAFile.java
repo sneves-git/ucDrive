@@ -5,8 +5,8 @@ import java.net.Socket;
 import java.nio.file.*;
 
 import com.ucdrive.configs.UsersConfigsFile;
-import com.ucdrive.refactorLater.User;
-import com.ucdrive.refactorLater.Users;
+import com.ucdrive.utils.User;
+import com.ucdrive.utils.Users;
 
 public class DownloadAFile extends Thread {
     private DataOutputStream out;
@@ -40,21 +40,6 @@ public class DownloadAFile extends Thread {
 
     // =============================
     public void run() {
-        /*
-         * 1. recebo porto a usar
-         * 2. crio a thread dando-lhe o porto,
-         * 3. Crio novo socket com porto a usar (na nova thread)
-         * 4. Fico à escuta
-         * 5. recebo a nova ligação
-         * 6. crio o novo out, in, reader
-         * 7. envio o client path
-         * 8. envia opcões de download para o cliente (ficheiros) na diretoria onde está
-         * 9. recebo escolha do utilizador
-         * 10. envio ao client o nome do ficheiro
-         * 11. começo a enviar ficheiro em chunks
-         * 12. envio mensagem a dizer que terminei
-         * 13.
-         */
 
         Path currentRelativePath = Paths.get("");
         String path = currentRelativePath.toAbsolutePath().toString() + "/src/com/ucdrive/server/" + server + "/"
@@ -69,13 +54,6 @@ public class DownloadAFile extends Thread {
                     nread = fis.read(buf);
                     if (nread > 0) {
                         out.write(buf, 0, nread);
-
-                        try {
-                            Thread.sleep(10000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-
                     }
                 } while (nread > -1);
             } catch (Exception e) {
@@ -85,7 +63,8 @@ public class DownloadAFile extends Thread {
 
             }
             fis.close();
-            System.out.println("VOU VOLTAR A METER A CHOICE A 0 DownloadAFile");
+            clientSocket.close();
+
             UsersConfigsFile config = new UsersConfigsFile();
             config.updateLastChoice(lastChoice, user, users);
         } catch (IOException e) {

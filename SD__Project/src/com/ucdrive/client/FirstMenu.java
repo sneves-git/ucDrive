@@ -1,5 +1,7 @@
 package com.ucdrive.client;
 
+import com.ucdrive.utils.ConsoleColors;
+
 import java.io.*;
 import java.util.*;
 
@@ -21,8 +23,6 @@ public class FirstMenu {
         // Checks if user's input is valid
         int choice = 0;
         try {
-
-            // sc = new Scanner(System.in);
             while (true) {
                 try {
                     choice = Integer.parseInt(firstReader.readLine());
@@ -30,7 +30,7 @@ public class FirstMenu {
                     if (choice > 0 && choice < 4) {
                         break;
                     } else {
-                        System.out.print("\nInvalid option.\n\n"
+                        System.out.print(ConsoleColors.RED + "Invalid option.\n\n" + ConsoleColors.RESET
                                 + "Choose one of the following options:\n"
                                 + "\t1 - Configure IP and port of servers\n"
                                 + "\t2 - Login\n"
@@ -38,7 +38,7 @@ public class FirstMenu {
                                 + "Choice: ");
                     }
                 } catch (NumberFormatException e) {
-                    System.out.print("\nInvalid option.\n\n"
+                    System.out.print(ConsoleColors.RED + "Invalid option.\n\n" + ConsoleColors.RESET
                             + "Choose one of the following options:\n"
                             + "\t1 - Configure IP and port of servers\n"
                             + "\t2 - Login\n"
@@ -48,7 +48,6 @@ public class FirstMenu {
             }
 
         } catch (Exception e) {
-            System.out.println("Login.java in Menu() - An error occurred with scanner.");
             e.printStackTrace();
         }
 

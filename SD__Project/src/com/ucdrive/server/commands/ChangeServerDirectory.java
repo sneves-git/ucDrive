@@ -1,8 +1,8 @@
 package com.ucdrive.server.commands;
 
 import com.ucdrive.configs.UsersConfigsFile;
-import com.ucdrive.refactorLater.User;
-import com.ucdrive.refactorLater.Users;
+import com.ucdrive.utils.User;
+import com.ucdrive.utils.Users;
 
 import java.io.*;
 import java.nio.file.*;
@@ -17,7 +17,6 @@ public class ChangeServerDirectory {
         out.writeUTF(user.getLastSessionServer() + "> ");
         String command = in.readUTF();
         String newPath = "";
-        String fileName = "src/com/ucdrive/configs/users.txt";
         UsersConfigsFile conf = new UsersConfigsFile();
 
         // Moves the directory back one directory
@@ -68,7 +67,7 @@ public class ChangeServerDirectory {
                 return;
             }
         }
-        ArrayList<String> clientFolders = getUserFoldersInClient(user.getLastSessionServer(), user.getUsername(),
+        ArrayList<String> clientFolders = getUserFoldersInClient(user.getUsername(),
                 server);
         for (String folder : clientFolders) {
             if (folder.equals(aux_list.get(0))) {
@@ -81,8 +80,6 @@ public class ChangeServerDirectory {
                 conf.updateUsersFile(users);
 
                 out.writeUTF("Success!");
-
-                System.out.println("Success!");
                 return;
             }
         }
@@ -91,7 +88,7 @@ public class ChangeServerDirectory {
         return;
     }
 
-    public ArrayList<String> getUserFoldersInClient(String clientPath, String username, String server) {
+    public ArrayList<String> getUserFoldersInClient(String username, String server) {
         ArrayList<String> folders = new ArrayList<String>();
 
         Path currentRelativePath = Paths.get("");
@@ -99,7 +96,6 @@ public class ChangeServerDirectory {
 
         String path = "/src/com/ucdrive/server/" + server + "/Home/" + username;
         String totalPath = Paths.get(s, path).toString();
-        System.out.println(totalPath);
 
         File dir = new File(totalPath);
         File[] files = dir.listFiles();

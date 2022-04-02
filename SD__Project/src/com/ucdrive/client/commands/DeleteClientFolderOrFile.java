@@ -17,9 +17,7 @@ public class DeleteClientFolderOrFile {
         List<String> aux_list = new ArrayList<String>(Arrays.asList(command.split(" ")));
         // If input is incorrect ex:"mkdir folder (something)" -> error
         if (aux_list.size() > 2) {
-
             System.out.println("Wrong input!");
-
             return;
         } else if (aux_list.size() == 2) {
             if (aux_list.get(0).equals("del")) {

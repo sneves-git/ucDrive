@@ -1,9 +1,12 @@
 package com.ucdrive.server;
 
 import com.ucdrive.configs.UsersConfigsFile;
-import com.ucdrive.refactorLater.ServerHelperClass;
-import com.ucdrive.refactorLater.User;
-import com.ucdrive.refactorLater.Users;
+import com.ucdrive.utils.ServerHelperClass;
+import com.ucdrive.utils.Users;
+import com.ucdrive.server.copyAllFileStorage.PrimaryFileStorage;
+import com.ucdrive.server.heartbeats.PrimaryHeartbeats;
+import com.ucdrive.server.copyAllFileStorage.SecondaryFileStorage;
+import com.ucdrive.server.heartbeats.SecondaryHeartbeats;
 
 import java.io.*;
 import java.net.*;
@@ -32,7 +35,7 @@ public class Server1 {
         File file = new File(totalPath);
 
         String server2Ip = null;
-        int serverPort = -1, udpPortServer1 = -1, udpPortServer2 = -1, numero = 0, filePortServer1 = -1,
+        int serverPort = -1, udpPortServer1 = -1, udpPortServer2 = -1, filePortServer1 = -1,
                 filePortServer2 = -1, updateFolderOrFilePort1 = -1, updateFolderOrFilePort2 = -1;
         Scanner sc = null;
         try {
@@ -75,7 +78,6 @@ public class Server1 {
         }
 
         // UDP connection
-        System.out.println("Socket Datagram à escuta no porto " + udpPortServer1);
         String a = currentRelativePath.toAbsolutePath().toString();
         String p = "/src/com/ucdrive/server/" + server + "/Home/";
         String startDir = Paths.get(a, p).toString();
@@ -84,20 +86,18 @@ public class Server1 {
         String status = helper.determineIfPrimaryOrSecondary(udpPortServer2,
                 server2Ip);
         if (status.equals("Primary")) {
-            System.out.println("sou primario");
             new PrimaryHeartbeats(udpPortServer1);
             new PrimaryFileStorage(filePortServer1, filePortServer2, server2Ip, startDir, server);
 
             // TCP connection
-            System.out.println("A Escuta no Porto " + serverPort);
             try (ServerSocket listenSocket = new ServerSocket(serverPort)) {
-                System.out.println("LISTEN SOCKET=" + listenSocket);
+                System.out.println("[TCP] IP="+ listenSocket.getInetAddress() + " Port="+serverPort);
+
                 while (true) {
                     Socket clientSocket = listenSocket.accept(); // BLOQUEANTE
 
                     System.out.println("CLIENT_SOCKET (created at accept())=" + clientSocket);
-                    numero++;
-                    new TCPConnection(users, clientSocket, numero, server);
+                    new TCPConnection(users, clientSocket, server);
                 }
             } catch (Exception e) {
                 System.out.println("Error with server socket: " + e);
@@ -109,22 +109,20 @@ public class Server1 {
             heartbeatThread.join();
             fileThread.join();
 
-            System.out.println("SOU PRIMARIO DEPOIS DE O OUTRO TER morrido");
 
             new PrimaryHeartbeats(udpPortServer1);
             new PrimaryFileStorage(filePortServer1, filePortServer2, server2Ip, startDir,
                     server);
 
             // TCP connection
-            System.out.println("A Escuta no Porto " + serverPort);
             try (ServerSocket listenSocket = new ServerSocket(serverPort)) {
-                System.out.println("LISTEN SOCKET=" + listenSocket);
+                System.out.println("[TCP] IP="+ listenSocket.getInetAddress() + " Port="+serverPort);
+
                 while (true) {
                     Socket clientSocket = listenSocket.accept(); // BLOQUEANTE
 
                     System.out.println("CLIENT_SOCKET (created at accept())=" + clientSocket);
-                    numero++;
-                    new TCPConnection(users, clientSocket, numero, server);
+                    new TCPConnection(users, clientSocket, server);
                 }
             } catch (Exception e) {
                 System.out.println("Error with server socket: " + e);
@@ -134,33 +132,3 @@ public class Server1 {
 
 }
 
-class TCPConnection extends Thread {
-    DataInputStream in;
-    DataOutputStream out;
-    Socket clientSocket;
-    int thread_number;
-    Users users;
-    User user;
-    String server;
-
-    public TCPConnection(Users users, Socket aClientSocket, int numero, String server) {
-        thread_number = numero;
-        this.users = users;
-        this.server = server;
-        try {
-            clientSocket = aClientSocket;
-            in = new DataInputStream(clientSocket.getInputStream());
-            out = new DataOutputStream(clientSocket.getOutputStream());
-            this.start();
-        } catch (IOException e) {
-            System.out.println("Connection:" + e.getMessage());
-        }
-    }
-
-    // =============================
-    public void run() {
-        // First menu from server
-        FirstMenu menu = new FirstMenu();
-        menu.firstMenu(users, in, out, server);
-    }
-}

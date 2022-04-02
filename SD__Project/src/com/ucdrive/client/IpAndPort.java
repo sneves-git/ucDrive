@@ -1,5 +1,7 @@
 package com.ucdrive.client;
 
+import com.ucdrive.utils.ConsoleColors;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Scanner;
@@ -31,74 +33,102 @@ public class IpAndPort {
 
     // functions
     public void configureIpAndPortBeforeLogin() throws IOException {
-        System.out.println("Primary server IP: ");
+        System.out.println("\n------------ Change server's ip and port -------------");
+
+        System.out.print("Primary server IP: ");
         if (sc.hasNextLine()) {
             primaryIp = sc.nextLine();
         }
 
         int aux = -1;
         do {
-            System.out.println("Primary server Port: ");
+            System.out.print("Primary server Port: ");
             if (sc.hasNextLine()) {
                 try {
                     aux = Integer.parseInt(sc.nextLine());
+                    if(aux == -1){
+                        System.out.println(ConsoleColors.RED + "Invalid port number, please choose an integer number!" + ConsoleColors.RESET);
+                    }
                 } catch (NumberFormatException e) {
                     aux = -1;
+                    System.out.println(ConsoleColors.RED + "Invalid port number, please choose an integer number!" + ConsoleColors.RESET);
                 }
             }
+
         } while (aux == -1);
         primaryCommandPort = aux;
 
-        System.out.println("Secondary server IP: ");
+        System.out.print("Secondary server IP: ");
         if (sc.hasNextLine()) {
             secondaryIp = sc.nextLine();
         }
 
         aux = -1;
         do {
-            System.out.println("Secondary server Port: ");
+            System.out.print("Secondary server Port: ");
             if (sc.hasNextLine()) {
                 try {
                     aux = Integer.parseInt(sc.nextLine());
+                    if(aux == -1){
+                        System.out.println(ConsoleColors.RED + "Invalid port number, please choose an integer number!" + ConsoleColors.RESET);
+                    }
                 } catch (NumberFormatException e) {
                     aux = -1;
+                    System.out.println(ConsoleColors.RED + "Invalid port number, please choose an integer number!" + ConsoleColors.RESET);
                 }
             }
+
         } while (aux == -1);
         secondaryCommandPort = aux;
+        System.out.println("------------------------------------------------------\n");
+
     }
 
     public void configureIpAndPortAfterLogin(BufferedReader reader)
             throws IOException {
-        System.out.println("Primary server IP: ");
+        System.out.println("\n------------ Change server's ip and port -------------");
+
+        System.out.print("Primary server IP: ");
         primaryIp = reader.readLine();
 
-        System.out.println("Primary server Port: ");
-        int aux = -1;
+        int aux = -1, flag = 0;
         do {
+            System.out.print("Primary server Port: ");
             try {
                 aux = Integer.parseInt(reader.readLine());
+                if(aux == -1){
+                    System.out.println(ConsoleColors.RED + "Invalid port number, please choose an integer number!" + ConsoleColors.RESET);
+                }
             } catch (NumberFormatException e) {
-                System.out.println("Invalid port number, please choose an integer number.");
+                System.out.println(ConsoleColors.RED + "Invalid port number, please choose an integer number!" + ConsoleColors.RESET);
                 aux = -1;
             }
+
         } while (aux == -1);
         primaryCommandPort = aux;
 
-        System.out.println("Secondary server IP: ");
+        System.out.print("Secondary server IP: ");
         secondaryIp = reader.readLine();
 
-        System.out.println("Secondary server Port: ");
         aux = -1;
         do {
+            System.out.print("Secondary server Port: ");
+
             try {
                 aux = Integer.parseInt(reader.readLine());
+                if(aux == -1){
+                    System.out.println(ConsoleColors.RED + "Invalid port number, please choose an integer number!" + ConsoleColors.RESET);
+                }
             } catch (NumberFormatException e) {
-                System.out.println("Invalid port number, please choose an integer number.");
+                System.out.println(ConsoleColors.RED + "Invalid port number, please choose an integer number!" + ConsoleColors.RESET);
                 aux = -1;
             }
+
         } while (aux == -1);
         secondaryCommandPort = aux;
+
+        System.out.println("------------------------------------------------------\n");
+
     }
 
     // getters and setters

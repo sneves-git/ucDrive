@@ -1,7 +1,7 @@
 package com.ucdrive.server.commands;
 
-import com.ucdrive.refactorLater.User;
-import com.ucdrive.refactorLater.Users;
+import com.ucdrive.utils.User;
+import com.ucdrive.utils.Users;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

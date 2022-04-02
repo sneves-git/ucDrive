@@ -3,7 +3,7 @@ package com.ucdrive.server.commands;
 import java.io.*;
 import java.nio.file.*;
 
-import com.ucdrive.refactorLater.ServerHelperClass;
+import com.ucdrive.utils.ServerHelperClass;
 
 public class ListServerFiles {
     public ListServerFiles() {

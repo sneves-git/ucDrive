@@ -7,7 +7,7 @@ import java.nio.file.*;
 import java.util.ArrayList;
 
 import com.ucdrive.configs.UsersConfigsFile;
-import com.ucdrive.refactorLater.*;
+import com.ucdrive.utils.*;
 
 public class DownloadHelper {
 
@@ -48,7 +48,7 @@ public class DownloadHelper {
 				}
 			}
 			out.writeUTF("File does not exist!");
-			System.out.println("VOU VOLTAR A METER A CHOICE A 0 HELPER");
+
 			UsersConfigsFile config = new UsersConfigsFile();
 			config.updateLastChoice(lastChoice, user, users);
 		} catch (IOException e) {
