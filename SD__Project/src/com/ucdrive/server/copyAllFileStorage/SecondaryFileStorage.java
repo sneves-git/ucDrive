@@ -123,11 +123,8 @@ public class SecondaryFileStorage extends Thread {
             ByteArrayInputStream bais = new ByteArrayInputStream(rbuf, 0, dr.getLength());
             DataInputStream dis = new DataInputStream(bais);
             ack = dis.readUTF();
-            System.out.println("ack:" + ack);
             if (fileExists && ack.equals(md5)) {
                 // Send byte array
-                System.out.println("FIle exists ");
-
                 baos = new ByteArrayOutputStream();
                 dos = new DataOutputStream(baos);
                 dos.writeUTF(ack);
@@ -137,7 +134,6 @@ public class SecondaryFileStorage extends Thread {
             } else{
                 baos = new ByteArrayOutputStream();
                 dos = new DataOutputStream(baos);
-                System.out.println("FIle dowsn't exist ");
                 dos.writeUTF("File doesn't exist!");
                 byte[] buf = baos.toByteArray();
                 dp = new DatagramPacket(buf, buf.length, ia, filePort);
@@ -146,10 +142,7 @@ public class SecondaryFileStorage extends Thread {
                 receiveFileViaUDP(path, ack, ds);
             }
         } catch (Exception e) {
-            System.out.println("CATCH");
         }
-        System.out.println("EXITS ");
-
     }
 
     public Hashtable<String, String> initializeHashtable(Hashtable<String, String> dict, String startDirectory) {
@@ -166,13 +159,6 @@ public class SecondaryFileStorage extends Thread {
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
-
-        Enumeration<String> e = dict.keys();
-
-        while (e.hasMoreElements()) {
-            String key = e.nextElement();
-            System.out.println("KEY: " + key + " VALUE: " + dict.get(key));
         }
 
         return dict;
@@ -233,27 +219,19 @@ public class SecondaryFileStorage extends Thread {
                     fos.write(rbuf, 0, length);
                 }
             } while (true);
-            System.out.println("TERMINEI ALBERTO");
             fos.close();
 
             try {
                 MD5 obj = new MD5();
                 if (!(obj.md5(s).equals(originalMD5))) {
-                    System.out.println("ALBERTO MAL");
-
                     sendAck(ds, "Not done!");
                     receiveFileViaUDP(path, originalMD5, ds);
                 } else {
-                    System.out.println("ALBERTO BEM");
-
                     sendAck(ds, "Done!");
                 }
             } catch (NoSuchAlgorithmException e) {
-                System.out.println("ALBERTO MAL");
                 e.printStackTrace();
             } catch (IOException e) {
-                System.out.println("ALBERTO MAL");
-
                 e.printStackTrace();
             }
 

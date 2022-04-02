@@ -56,7 +56,6 @@ public class PrimaryFileStorage extends Thread {
         try {
             if (files != null && files.length > 0) {
                 for (File file : files) {
-                    System.out.println("filename: " + file.getName());
                     ServerHelperClass shc = new ServerHelperClass();
 
                     // Check if the file is a directory
@@ -71,23 +70,16 @@ public class PrimaryFileStorage extends Thread {
                         getAllDirectoryFiles(file.getPath(), ds);
                     } else {
                         // Send the word "File"
-                        System.out.println("antes file");
                         sendAndReceiveAck("File", ds, false);
 
                         // Send File Path
-                        System.out.println("antes path");
-
                         sendAndReceiveAck(shc.convertPath(file.getPath(), this.server), ds, false);
 
                         // Send file with MD5
                         MD5 obj = new MD5();
-                        System.out.println("antes md5");
-
                         String md5 = obj.md5(file.getPath());
                         ackReturn = sendAndReceiveAck(md5, ds, true);
-                        System.out.println("ackReturn: " + ackReturn);
                         if (ackReturn.equals("File doesn't exist!")) {
-                            System.out.println("ficheiro n existe");
 
                             String ack = null;
                             do {
@@ -99,7 +91,6 @@ public class PrimaryFileStorage extends Thread {
                                 ByteArrayInputStream bais = new ByteArrayInputStream(rbuf, 0, dr.getLength());
                                 DataInputStream dis = new DataInputStream(bais);
                                 ack = dis.readUTF();
-                                System.out.println("ACK FINAL: " + ack);
                             } while (!ack.equals("Done!"));
 
                         }
@@ -132,7 +123,6 @@ public class PrimaryFileStorage extends Thread {
                 e.printStackTrace();
             }
             fis.close();
-            System.out.println("TERMINEI ALBERTO");
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -196,7 +186,6 @@ public class PrimaryFileStorage extends Thread {
             return ack;
 
         } catch (Exception e) {
-            System.out.println("CATCH");
         }
         return ack;
     }
