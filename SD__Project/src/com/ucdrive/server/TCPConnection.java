@@ -13,10 +13,15 @@ class TCPConnection extends Thread {
     Socket clientSocket;
     Users users;
     String server;
+    int myPort, filePort;
+    String host;
 
-    public TCPConnection(Users users, Socket aClientSocket, String server) {
+    public TCPConnection(Users users, Socket aClientSocket, String server, int myPort, int filePort, String host) {
         this.users = users;
         this.server = server;
+        this.myPort = myPort;
+        this.filePort = filePort;
+        this.host = host;
         try {
             clientSocket = aClientSocket;
             in = new DataInputStream(clientSocket.getInputStream());
@@ -30,6 +35,6 @@ class TCPConnection extends Thread {
     public void run() {
         // First menu from server
         FirstMenu menu = new FirstMenu();
-        menu.firstMenu(users, in, out, server);
+        menu.firstMenu(users, in, out, server, myPort, filePort, host);
     }
 }

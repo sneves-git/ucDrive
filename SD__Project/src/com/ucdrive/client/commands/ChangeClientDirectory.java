@@ -62,6 +62,7 @@ public class ChangeClientDirectory {
         if (aux_list.size() > 2) {
             out.writeUTF("Wrong input!");
             System.out.println(ConsoleColors.RED + "Wrong input! Please use: cd <folderName> OR <folderName>!" + ConsoleColors.RESET);
+            System.out.println("------------------------------------------------\n");
             return;
         } else if (aux_list.size() == 2) {
             if (aux_list.get(0).equals("cd")) {
@@ -69,6 +70,7 @@ public class ChangeClientDirectory {
             } else {
                 out.writeUTF("Wrong input!");
                 System.out.println(ConsoleColors.RED + "Wrong input! Please use: cd <folderName> OR <folderName>!" + ConsoleColors.RESET);
+                System.out.println("------------------------------------------------\n");
                 return;
             }
         }

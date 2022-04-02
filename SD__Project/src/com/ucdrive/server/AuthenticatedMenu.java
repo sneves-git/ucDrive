@@ -13,7 +13,7 @@ public class AuthenticatedMenu {
     public AuthenticatedMenu() {
     }
 
-    public int authenticatedMenu(User user, Users users, DataInputStream in, DataOutputStream out, String server)
+    public int authenticatedMenu(User user, Users users, DataInputStream in, DataOutputStream out, String server, int myPort, int filePort, String host)
             throws IOException {
         int choice = 0;
         UsersConfigsFile conf = new UsersConfigsFile();
@@ -121,7 +121,11 @@ public class AuthenticatedMenu {
                     conf.updateLastChoice(6, user, users);
 
                     CreateNewServerFolder obj6 = new CreateNewServerFolder();
-                    obj6.createNewServerFolder(user.getLastSessionServer(), in, out, server);
+                    try {
+                        obj6.createNewServerFolder(user.getLastSessionServer(), in, out, server, myPort, filePort, host);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     choice = 0;
                     conf.updateLastChoice(0, user, users);
 
@@ -145,7 +149,11 @@ public class AuthenticatedMenu {
                     conf.updateLastChoice(8, user, users);
 
                     DeleteServerFolderOrFile obj8 = new DeleteServerFolderOrFile();
-                    obj8.deleteServerFolder(user.getLastSessionServer(), in, out, server);
+                    try {
+                        obj8.deleteServerFolder(user.getLastSessionServer(), in, out, server, myPort, filePort, host);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     choice = 0;
                     conf.updateLastChoice(0, user, users);
 
@@ -154,8 +162,8 @@ public class AuthenticatedMenu {
                     conf.updateLastChoice(9, user, users);
 
                     try (ServerSocket folderSocket = new ServerSocket(0)) {
-                        int filePort = folderSocket.getLocalPort();
-                        out.writeUTF(Integer.toString(filePort));
+                        int filePort_ = folderSocket.getLocalPort();
+                        out.writeUTF(Integer.toString(filePort_));
 
                         Socket clientSocket_ = folderSocket.accept(); // BLOQUEANTE
 
@@ -199,15 +207,15 @@ public class AuthenticatedMenu {
                     conf.updateLastChoice(12, user, users);
 
                     try (ServerSocket folderSocket = new ServerSocket(0)) {
-                        int filePort = folderSocket.getLocalPort();
-                        out.writeUTF(Integer.toString(filePort));
+                        int filePort_ = folderSocket.getLocalPort();
+                        out.writeUTF(Integer.toString(filePort_));
                         Socket clientSocket_ = folderSocket.accept(); // BLOQUEANTE
 
                         System.out.println("CLIENT_SOCKET (created at accept())=" + clientSocket_);
 
                         UploadHelper helper = new UploadHelper();
                         helper.uploadHelper(user.getClientPath(), user.getLastSessionServer(), server, in, out,
-                                clientSocket_, user, users);
+                                clientSocket_, user, users, myPort, filePort, host);
                     } catch (Exception e) {
                         System.out.println("Error with server socket: " + e);
                     }

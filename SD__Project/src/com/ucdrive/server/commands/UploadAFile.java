@@ -1,6 +1,7 @@
 package com.ucdrive.server.commands;
 
 import com.ucdrive.configs.UsersConfigsFile;
+import com.ucdrive.server.copyPartOfFileStorage.PrimaryUpdateFolderOrFile;
 import com.ucdrive.utils.User;
 import com.ucdrive.utils.Users;
 
@@ -16,8 +17,10 @@ public class UploadAFile extends Thread {
 	private String ServerPath, fileName;
 	private User user;
 	private Users users;
+	int myPort, filePort;
+	String server, host;
 
-	public UploadAFile(Socket aClientSocket, String ServerPath, String fileName, User user, Users users) {
+	public UploadAFile(Socket aClientSocket, String ServerPath, String fileName, User user, Users users, int myPort, int filePort, String host, String server) {
 		try {
 			this.buffsize = 1024;
 			this.ServerPath = ServerPath;
@@ -25,6 +28,10 @@ public class UploadAFile extends Thread {
 			this.socket = aClientSocket;
 			this.user = user;
 			this.users = users;
+			this.myPort = myPort;
+			this.filePort = filePort;
+			this.host = host;
+			this.server = server;
 			this.in = new DataInputStream(socket.getInputStream());
 
 			this.start();
@@ -46,11 +53,14 @@ public class UploadAFile extends Thread {
 			}
 			fos.close();
 			socket.close();
-
+			ServerPath = ServerPath.replace("/","\\");
+			Thread pufof = new PrimaryUpdateFolderOrFile(myPort, filePort, host, server, ServerPath + "\\" + fileName,
+					"Download");
+			pufof.join();
 			UsersConfigsFile conf = new UsersConfigsFile();
 			conf.updateLastChoice(0, user, users);
 
-		} catch (IOException e) {
+		} catch (IOException | InterruptedException e) {
 			e.printStackTrace();
 		}
 	}

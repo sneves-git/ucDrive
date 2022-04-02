@@ -44,7 +44,7 @@ public class UsersConfigsFile {
             for (User user : users.getUsers()) {
                 output.append(user.getUsername() + "::" + user.getPassword() + "::" + user.getDepartment() + "::"
                         + user.getAddress() + "::"
-                        + user.getPhoneNumber() + "::" + user.getExpirationDate() + "::" + user.getCCnumber()
+                         + user.getExpirationDate() +"::"+user.getPhoneNumber() + "::" + user.getCCnumber()
                         + "::"
                         + user.getLastSessionServer() + "::"
                         + user.getLastChoice() + "\n");
@@ -66,7 +66,7 @@ public class UsersConfigsFile {
                 }
                 output.append(u.getUsername() + "::" + u.getPassword() + "::" + u.getDepartment() + "::"
                         + u.getAddress() + "::"
-                        + u.getPhoneNumber() + "::" + u.getExpirationDate() + "::" + u.getCCnumber()
+                        + u.getExpirationDate() +"::"+u.getPhoneNumber() + "::" + u.getCCnumber()
                         + "::"
                         + u.getLastSessionServer() + "::"
                         + u.getLastChoice() + "\n");

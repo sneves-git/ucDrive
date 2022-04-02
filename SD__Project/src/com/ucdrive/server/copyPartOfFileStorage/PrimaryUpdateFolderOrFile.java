@@ -39,24 +39,38 @@ public class PrimaryUpdateFolderOrFile extends Thread {
 
                 try {
                     this.ia = InetAddress.getByName(host);
+                    if (this.type.equals("Download")) {
+                        int res = sendReceiveAck("Download", ds, false);
+                        if(res == 0){
+                            ds.close();
+                            return;
+                        }
+                        ServerHelperClass shc = new ServerHelperClass();
+                        sendReceiveAck(shc.convertPath(filePath, server), ds, false);
+                        sendFile(ds);
+                    } else if (this.type.equals("Delete")) {
+                        int res = sendReceiveAck("Delete", ds, false);
+                        if(res == 0){
+                            ds.close();
+                            return;
+                        }
+                        deleteOrCreateNewFolder(ds);
+                    } else if (this.type.equals("CreateNewFolder")) {
+                        int res = sendReceiveAck("CreateNewFolder", ds, false);
+                        if(res == 0){
+                            ds.close();
+                            return;
+                        }
+                        deleteOrCreateNewFolder(ds);
+                    }
                 } catch (UnknownHostException e1) {
+                    ds.close();
                     return;
                 }
-
-                if (this.type.equals("Download")) {
-                    sendReceiveAck("Sending file!", ds, false);
-                    ServerHelperClass shc = new ServerHelperClass();
-                    sendReceiveAck(shc.convertPath(filePath, server), ds, false);
-                    sendFile(ds);
-                } else if (this.type.equals("Delete")) {
-                    sendReceiveAck("Delete", ds, false);
-                    deleteOrCreateNewFolder(ds);
-                } else if (this.type.equals("CreateNewFolder")) {
-                    sendReceiveAck("CreateNewFolder", ds, false);
-                    deleteOrCreateNewFolder(ds);
-                }
+                ds.close();
 
             } catch (Exception e) {
+                ds.close();
                 e.printStackTrace();
                 // receiveAndSendAck(ds);
             }
@@ -66,8 +80,9 @@ public class PrimaryUpdateFolderOrFile extends Thread {
 
     }
 
-    public void sendReceiveAck(String str, DatagramSocket ds, boolean sendFile) {
+    public int sendReceiveAck(String str, DatagramSocket ds, boolean sendFile) {
         try {
+            ds.setSoTimeout(10);
             // Send "Sending file!"
             baos = new ByteArrayOutputStream();
             dos = new DataOutputStream(baos);
@@ -76,7 +91,6 @@ public class PrimaryUpdateFolderOrFile extends Thread {
             byte[] buf = baos.toByteArray();
             dp = new DatagramPacket(buf, buf.length, ia, filePort);
             ds.send(dp);
-
             // Receive Ack
             byte[] rbuf = new byte[bufsize];
             dr = new DatagramPacket(rbuf, rbuf.length);
@@ -84,16 +98,19 @@ public class PrimaryUpdateFolderOrFile extends Thread {
             ByteArrayInputStream bais = new ByteArrayInputStream(rbuf, 0, dr.getLength());
             DataInputStream dis = new DataInputStream(bais);
             String ack = dis.readUTF();
-
             if (sendFile) {
+
                 if (ack.equals("Not done!")) {
                     sendFile(ds);
                 }
             }
 
+        }catch( SocketTimeoutException e){
+            return 0;
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return 1;
     }
 
     public void receive(DatagramSocket ds) {
@@ -117,7 +134,6 @@ public class PrimaryUpdateFolderOrFile extends Thread {
 
             FileInputStream fis = new FileInputStream(filePath);
             try {
-                int count = 0;
                 do {
                     nread = fis.read(buf);
 
@@ -130,11 +146,11 @@ public class PrimaryUpdateFolderOrFile extends Thread {
                 e.printStackTrace();
             }
             fis.close();
-
             receive(ds);
             MD5 md5 = new MD5();
             try {
                 sendReceiveAck(md5.md5(filePath), ds, true);
+
             } catch (NoSuchAlgorithmException e) {
                 e.printStackTrace();
             }

@@ -1,4 +1,6 @@
 package com.ucdrive.server.commands;
+import com.ucdrive.server.copyPartOfFileStorage.PrimaryUpdateFolderOrFile;
+
 import java.io.*;
 import java.nio.file.*;
 import java.util.*;
@@ -6,7 +8,7 @@ import java.util.*;
 public class DeleteServerFolderOrFile {
     public DeleteServerFolderOrFile(){}
 
-    public void deleteServerFolder(String serverPath, DataInputStream in, DataOutputStream out, String server) throws IOException  {
+    public void deleteServerFolder(String serverPath, DataInputStream in, DataOutputStream out, String server, int myPort, int filePort, String host) throws IOException, InterruptedException {
         Path currentRelativePath = Paths.get("");
         String path = currentRelativePath.toAbsolutePath().toString() + "/src/com/ucdrive/server/"+ server + "/" + serverPath;
 
@@ -34,6 +36,10 @@ public class DeleteServerFolderOrFile {
         if (f.exists()) {
             f.delete();
             out.writeUTF("Success!");
+
+            Thread pufof = new PrimaryUpdateFolderOrFile(myPort, filePort, host, server, path + "/" + aux_list.get(0),
+                    "Delete");
+            pufof.join();
         } else {
             out.writeUTF("The folder/file doesn't exist or you are in the wrong directory.");
         }

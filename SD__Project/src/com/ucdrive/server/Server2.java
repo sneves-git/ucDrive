@@ -1,6 +1,7 @@
 package com.ucdrive.server;
 
 import com.ucdrive.configs.UsersConfigsFile;
+import com.ucdrive.server.copyPartOfFileStorage.SecondaryUpdateFolderOrFile;
 import com.ucdrive.utils.ServerHelperClass;
 import com.ucdrive.utils.Users;
 import com.ucdrive.server.copyAllFileStorage.PrimaryFileStorage;
@@ -36,7 +37,7 @@ public class Server2 {
 
         String server1Ip = null;
         int serverPort = -1, udpPortServer1 = -1, udpPortServer2 = -1, filePortServer2 = -1,
-                filePortServer1 = -1, updateFolderOrFilePort1 = -1, updateFolderOrFilePort2 = -1;
+                filePortServer1 = -1, filePortUpdateServer2 = -1, filePortUpdateServer1 = -1;
         Scanner sc = null;
         try {
             sc = new Scanner(file);
@@ -63,10 +64,10 @@ public class Server2 {
                 filePortServer1 = Integer.parseInt(sc.nextLine());
             }
             if (sc.hasNextLine()) {
-                updateFolderOrFilePort1 = Integer.parseInt(sc.nextLine());
+                filePortUpdateServer2 = Integer.parseInt(sc.nextLine());
             }
             if (sc.hasNextLine()) {
-                updateFolderOrFilePort2 = Integer.parseInt(sc.nextLine());
+                filePortUpdateServer1 = Integer.parseInt(sc.nextLine());
             }
 
         } catch (IOException e) {
@@ -98,7 +99,7 @@ public class Server2 {
 
                     System.out.println("CLIENT_SOCKET (created at accept())=" + clientSocket);
 
-                    new TCPConnection(users, clientSocket, server);
+                    new TCPConnection(users, clientSocket, server, filePortUpdateServer2, filePortUpdateServer1, server1Ip);
                 }
             } catch (Exception e) {
                 System.out.println("Error with server socket: " + e);
@@ -108,8 +109,10 @@ public class Server2 {
 
             Thread heartbeatThread = new SecondaryHeartbeats(udpPortServer1, server1Ip);
             Thread fileThread = new SecondaryFileStorage(filePortServer2, filePortServer1, server1Ip, server);
+            Thread updateFileStorage = new SecondaryUpdateFolderOrFile(filePortUpdateServer2, filePortUpdateServer1,server1Ip, server);
             heartbeatThread.join();
             fileThread.join();
+            updateFileStorage.join();
 
             new PrimaryHeartbeats(udpPortServer2);
             new PrimaryFileStorage(filePortServer2, filePortServer1, server1Ip, startDir, server);
@@ -122,7 +125,7 @@ public class Server2 {
                     Socket clientSocket = listenSocket.accept(); // BLOQUEANTE
 
                     System.out.println("CLIENT_SOCKET (created at accept())=" + clientSocket);
-                    new TCPConnection(users, clientSocket, server);
+                    new TCPConnection(users, clientSocket, server, filePortUpdateServer2, filePortUpdateServer1, server1Ip);
                 }
             } catch (Exception e) {
                 System.out.println("Error with server socket: " + e);

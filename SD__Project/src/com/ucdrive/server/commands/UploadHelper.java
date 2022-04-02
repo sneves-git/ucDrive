@@ -16,7 +16,7 @@ public class UploadHelper {
 	}
 
 	public void uploadHelper(String clientPath, String serverPath, String server, DataInputStream in,
-			DataOutputStream out, Socket sFile, User user, Users users) {
+	                         DataOutputStream out, Socket sFile, User user, Users users, int myPort, int filePort, String host) {
 
 		Path currentRelativePath = Paths.get("");
 		String path = currentRelativePath.toAbsolutePath().toString() + "/src/com/ucdrive/server/" + server + "/"
@@ -27,7 +27,7 @@ public class UploadHelper {
 			out.writeUTF(clientPath);
 			if (in.readUTF().equals("File exists")) {
 				String fileName = in.readUTF();
-				new UploadAFile(sFile, path, fileName, user, users);
+				new UploadAFile(sFile, path, fileName, user, users, myPort, filePort, host, server);
 			}else{
 				sFile.close();
 				UsersConfigsFile conf = new UsersConfigsFile();

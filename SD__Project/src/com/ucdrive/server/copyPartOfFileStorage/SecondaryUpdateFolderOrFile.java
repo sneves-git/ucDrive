@@ -5,6 +5,7 @@ import java.net.*;
 import java.nio.file.*;
 
 import com.ucdrive.utils.MD5;
+import com.ucdrive.utils.ServerHelperClass;
 
 public class SecondaryUpdateFolderOrFile extends Thread {
     private int filePort;
@@ -34,29 +35,52 @@ public class SecondaryUpdateFolderOrFile extends Thread {
 
         try (DatagramSocket ds = new DatagramSocket(myPort)) {
             try {
-                try {
-                    this.ia = InetAddress.getByName(host);
-                } catch (UnknownHostException e1) {
-                    return;
-                }
 
-                while (true) {
-                    String ack = receiveAndSend_(ds, false);
-                    if (ack.equals("Download")) {
-                        String path = receiveAndSend_(ds, false);
-                        this.filePath = s + path;
-                        receiveFile(ds);
-                    } else if (ack.equals("Delete")) {
-                        String fileDirectory = receiveAndSend_(ds, false);
-                        File f = new File(s + fileDirectory);
-                        f.delete();
 
-                    } else if (ack.equals("CreateNewFolder")) {
-                        String folderPath = receiveAndSend_(ds, false);
-                        File f = new File(s + folderPath);
-                        f.mkdir();
+                while(true){
+                    ds.setSoTimeout(0);
+                    try {
+                        this.ia = InetAddress.getByName(host);
+                        String ack = receiveAndSend_(ds, false);
+                        if (ack.equals("Download")) {
+                            String path = receiveAndSend_(ds, false);
+                            this.filePath = s + path;
+                            receiveFile(ds);
+                        } else if (ack.equals("Delete")) {
+                            String fileDirectory = receiveAndSend_(ds, false);
+                            ServerHelperClass shc = new ServerHelperClass();
+                            String serverNameNew = "server1";
+                            if(serverName.equals("server1")){
+                                serverNameNew = "server2";
+                            }
+                            fileDirectory = Paths.get(fileDirectory).toString();
+                            String path_ = shc.convertPath(fileDirectory, serverNameNew);
+                            path_ = path_.replace("/","\\" );
+                            File f = new File(s+path_);
+                            f.delete();
+
+                        } else if (ack.equals("CreateNewFolder")) {
+                            String folderPath = receiveAndSend_(ds, false);
+                            folderPath = Paths.get(folderPath).toString();
+                            String serverNameNew = "server1";
+                            if(serverName.equals("server1")){
+                                serverNameNew = "server2";
+                            }
+                            ServerHelperClass shc = new ServerHelperClass();
+                            String path_ = shc.convertPath(folderPath, serverNameNew);
+
+
+                            File f = new File(s + path_);
+                            f.mkdir();
+
+                        }
+                        ia = null;
+                    } catch (UnknownHostException e1) {
+                        return;
                     }
+
                 }
+
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -66,7 +90,7 @@ public class SecondaryUpdateFolderOrFile extends Thread {
         }
     }
 
-    public String receiveAndSend_(DatagramSocket ds, boolean receiveFile) {
+    public String receiveAndSend_(DatagramSocket ds, boolean receiveFile_) {
         String ack = null;
         try {
             // Receive Ack
@@ -77,7 +101,7 @@ public class SecondaryUpdateFolderOrFile extends Thread {
             DataInputStream dis = new DataInputStream(bais);
             ack = dis.readUTF();
 
-            if (receiveFile) {
+            if (receiveFile_) {
                 MD5 obj = new MD5();
                 if (!(obj.md5(filePath).equals(ack))) {
                     sendAck(ds, "Not done!");
@@ -123,7 +147,7 @@ public class SecondaryUpdateFolderOrFile extends Thread {
             byte[] rbuf = new byte[bufsize];
             dr = new DatagramPacket(rbuf, rbuf.length);
 
-            int length, count = 0;
+            int length;
             FileOutputStream fos = new FileOutputStream(filePath);
             do {
                 ds.setSoTimeout(10);
@@ -142,7 +166,7 @@ public class SecondaryUpdateFolderOrFile extends Thread {
                 }
             } while (true);
             fos.close();
-            sendAck(ds, "Done!");
+            sendAck(ds, "Done");
             receiveAndSend_(ds, true);
 
         } catch (IOException e) {
