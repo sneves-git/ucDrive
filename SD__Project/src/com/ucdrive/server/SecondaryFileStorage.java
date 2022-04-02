@@ -59,46 +59,6 @@ public class SecondaryFileStorage extends Thread {
 
     }
 
-    private boolean receiveAndSendAck_(DatagramSocket ds, String word) {
-        String ack = null;
-        try {
-            // Receive Ack
-            byte[] rbuf = new byte[bufsize];
-            dr = new DatagramPacket(rbuf, rbuf.length);
-            ds.receive(dr);
-            ByteArrayInputStream bais_ = new ByteArrayInputStream(rbuf, 0, dr.getLength());
-            DataInputStream dis_ = new DataInputStream(bais_);
-            ack = dis_.readUTF();
-            System.out.println("[Primary] 1- Recebi: " + ack);
-
-            try {
-                this.ia = InetAddress.getByName(host);
-            } catch (UnknownHostException e1) {
-                e1.printStackTrace();
-            }
-
-            if (ack.equals(word)) {
-
-                // Send byte array
-                ByteArrayOutputStream baos_ = new ByteArrayOutputStream();
-                DataOutputStream dos_ = new DataOutputStream(baos_);
-                dos_.writeUTF(ack);
-
-                System.out.println("-------- [Primary] 1- Mandei: " + ack);
-
-                byte[] buf = baos_.toByteArray();
-                dp = new DatagramPacket(buf, buf.length, ia, filePort);
-                ds.send(dp);
-
-                return true;
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
     public void sendAndReceiveAck(String str, DatagramSocket ds) {
         try {
             baos = new ByteArrayOutputStream();

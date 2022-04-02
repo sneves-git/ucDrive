@@ -54,7 +54,6 @@ public class PrimaryFileStorage extends Thread {
     public void getAllDirectoryFiles(String startDirectory, DatagramSocket ds)
             throws NoSuchAlgorithmException, IOException {
 
-        System.out.println("[getAllDirectoryFiles] startDir: " + startDirectory);
         File dir = new File(startDirectory);
         File[] files = dir.listFiles();
         String ackReturn = null;
@@ -62,36 +61,21 @@ public class PrimaryFileStorage extends Thread {
         try {
             if (files != null && files.length > 0) {
                 for (File file : files) {
-                    System.out.println("--------- FILE: " + file.getName() + " ---------------");
                     ServerHelperClass shc = new ServerHelperClass();
 
                     // Check if the file is a directory
                     if (file.isDirectory()) {
                         // Send the word "Folder"
-                        System.out.println("before sending folder");
-
                         sendAndReceiveAck("Folder", ds, false);
-                        System.out.println("After sending folder");
 
                         // Send directory
-                        System.out.println("before sending path");
-
-                        System.out.println("[getAllDirectoryFiles] shc.convertPath: "
-                                + shc.convertPath(file.getPath(), this.server));
-
                         sendAndReceiveAck(shc.convertPath(file.getPath(), this.server), ds, false);
-                        System.out.println("After sending path");
 
                         // Recursive function
-                        System.out.println("[getAllDirectoryFiles] file.getPath: " + file.getPath());
-
                         getAllDirectoryFiles(file.getPath(), ds);
                     } else {
                         // Send the word "File"
-                        System.out.println("before sending file");
-
                         sendAndReceiveAck("File", ds, false);
-                        System.out.println("after sending file");
 
                         // Send File Path
                         sendAndReceiveAck(shc.convertPath(file.getPath(), this.server), ds, false);
@@ -104,8 +88,6 @@ public class PrimaryFileStorage extends Thread {
                         if (ackReturn.equals("File doesn't exist!")) {
                             String ack = null;
                             do {
-                                System.out.println("[getAllDirectoryFiles] file.getPath: " + file.getPath());
-
                                 sendFile(file.getPath(), ds, md5);
 
                                 byte[] rbuf = new byte[bufsize];
@@ -128,21 +110,16 @@ public class PrimaryFileStorage extends Thread {
     }
 
     private void sendFile(String filePath, DatagramSocket ds, String md5Primary) throws NoSuchAlgorithmException {
-        System.out.println(" -- SEND A FILE --");
         try {
             int nread;
             byte[] buf = new byte[bufsize];
-            System.out.println("File Path: " + filePath);
 
             FileInputStream fis = new FileInputStream(filePath);
             try {
-                int count = 0;
                 do {
-                    System.out.println("COUNT: " + count++);
                     nread = fis.read(buf);
 
                     if (nread > 0) {
-                        // sendAndReceiveAck("Packet!", ds, false);
                         dp = new DatagramPacket(buf, nread, ia, filePort);
                         ds.send(dp);
                     }
@@ -150,7 +127,6 @@ public class PrimaryFileStorage extends Thread {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            // sendAndReceiveAck("Parei!", ds, false);
             fis.close();
 
         } catch (IOException e) {

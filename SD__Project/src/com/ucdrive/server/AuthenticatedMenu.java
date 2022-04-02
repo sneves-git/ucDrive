@@ -16,10 +16,10 @@ public class AuthenticatedMenu {
     public int authenticatedMenu(User user, Users users, DataInputStream in, DataOutputStream out, String server)
             throws IOException {
         int choice = 0;
+        UsersConfigsFile conf = new UsersConfigsFile();
+        choice = user.getLastChoice();
 
         while (choice != 13) {
-            UsersConfigsFile conf = new UsersConfigsFile();
-            choice = user.getLastChoice();
             switch (choice) {
                 case -1:
                     out.writeUTF("\nInvalid option.\n\n"
@@ -46,6 +46,7 @@ public class AuthenticatedMenu {
                     }
                     break;
                 case 0:
+
                     out.writeUTF("Choose one of the following options:\n"
                             + "\t1  - Change password\n"
                             + "\t2  - Change client's directory\n"
@@ -71,22 +72,18 @@ public class AuthenticatedMenu {
                     }
                     break;
                 case 1:
-
                     conf.updateLastChoice(1, user, users);
 
                     ChangePassword obj1 = new ChangePassword();
                     obj1.changePassword(user, users, in, out);
+
                     choice = 0;
                     conf.updateLastChoice(0, user, users);
 
                     break;
                 case 2:
-                    System.out.println("4");
-
                     conf.updateLastChoice(2, user, users);
-                    System.out.println("1");
                     ChangeClientDirectory obj2 = new ChangeClientDirectory();
-                    System.out.println("2");
 
                     System.out.println(user.getLastSessionServer());
                     obj2.changeClientDirectory(user, users, in, out);
@@ -104,17 +101,13 @@ public class AuthenticatedMenu {
 
                     break;
                 case 4:
-                    conf.updateLastChoice(4, user, users);
-
                     // Configure IPandPort of client
                     break;
                 case 5:
-                    conf.updateLastChoice(5, user, users);
 
                     CreateNewClientFolder obj5 = new CreateNewClientFolder();
                     obj5.createNewClientFolder(user.getClientPath(), out);
                     choice = 0;
-                    conf.updateLastChoice(0, user, users);
 
                     break;
                 case 6:
@@ -161,7 +154,7 @@ public class AuthenticatedMenu {
 
                         DownloadHelper dh = new DownloadHelper();
                         String fileName = dh.downloadHelper(user.getClientPath(), user.getLastSessionServer(), in, out,
-                                server);
+                                server, 0, user, users);
 
                         if (!fileName.equals("File does not exist!")) {
                             new DownloadAFile(clientSocket_, user.getLastSessionServer(), server, fileName, user, users,
@@ -198,12 +191,7 @@ public class AuthenticatedMenu {
 
                     try (ServerSocket folderSocket = new ServerSocket(0)) {
                         int filePort = folderSocket.getLocalPort();
-                        System.out.println("A Escuta no Porto " + filePort);
-
                         out.writeUTF(Integer.toString(filePort));
-
-                        System.out.println("LISTEN SOCKET=" + folderSocket);
-
                         Socket clientSocket_ = folderSocket.accept(); // BLOQUEANTE
 
                         System.out.println("CLIENT_SOCKET (created at accept())=" + clientSocket_);

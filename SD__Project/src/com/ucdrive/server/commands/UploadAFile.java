@@ -43,6 +43,12 @@ public class UploadAFile extends Thread {
 			int length;
 			while ((length = in.read(buf, 0, buf.length)) > 0) {
 				fos.write(buf, 0, length);
+				try {
+					Thread.sleep(10000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 
 			}
 			fos.close();

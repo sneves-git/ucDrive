@@ -4,6 +4,7 @@ import com.ucdrive.refactorLater.Users;
 import com.ucdrive.refactorLater.User;
 
 import java.io.*;
+import java.nio.file.*;
 
 public class Login {
 	private String username, password;
@@ -16,6 +17,9 @@ public class Login {
 	public User login_(Users users, DataInputStream in, DataOutputStream out) throws IOException {
 		User my_user = null;
 
+		Path currentRelativePath = Paths.get("");
+		String newClientPath = currentRelativePath.toAbsolutePath().toString();
+
 		do {
 			username = in.readUTF();
 		} while (!users.CheckIfUsernameExists(username, out));
@@ -27,6 +31,7 @@ public class Login {
 		for (User user : users.getUsers()) {
 			if (user.getUsername().equals(username)) {
 				my_user = user;
+				user.setClientPath(newClientPath);
 				return my_user;
 			}
 		}

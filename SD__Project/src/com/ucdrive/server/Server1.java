@@ -13,7 +13,6 @@ import java.util.*;
 
 public class Server1 {
     private static String server = "server1";
-    private static int flag = 0;
 
     public static void main(String[] args) throws InterruptedException {
         // Extracts users information from users.txt

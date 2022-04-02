@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
 
+import com.ucdrive.configs.UsersConfigsFile;
 import com.ucdrive.refactorLater.User;
 import com.ucdrive.refactorLater.Users;
 import com.ucdrive.server.commands.Login;
@@ -27,16 +28,14 @@ public class FirstMenu {
                         Login login = new Login();
                         this.user = login.login_(users, in, out);
 
-
-                         if (flag == 0) {
-                             if (user.getLastChoice() == 0) {
-                                 out.writeUTF("Menu!");
-                             } else {
-                                 out.writeUTF(Integer.toString(user.getLastChoice()));
-                             }
-                             flag = 1;
-                         }
-
+                        if (flag == 0) {
+                            if (user.getLastChoice() == 0) {
+                                out.writeUTF("Menu!");
+                            } else {
+                                out.writeUTF(Integer.toString(user.getLastChoice()));
+                            }
+                            flag = 1;
+                        }
 
                         AuthenticatedMenu authMenu = new AuthenticatedMenu();
                         choice = authMenu.authenticatedMenu(this.user, users, in, out, server);

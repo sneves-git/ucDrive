@@ -28,6 +28,9 @@ public class UploadHelper {
 			if (in.readUTF().equals("File exists")) {
 				String fileName = in.readUTF();
 				new UploadAFile(sFile, path, fileName, user, users);
+			}else{
+				UsersConfigsFile conf = new UsersConfigsFile();
+				conf.updateLastChoice(0, user, users);
 			}
 
 		} catch (IOException e) {

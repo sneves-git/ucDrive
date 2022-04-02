@@ -45,10 +45,14 @@ public class DownloadAFile extends Thread {
             int length;
             while ((length = in.read(buf, 0, buf.length)) > 0) {
                 fos.write(buf, 0, length);
+
+                Thread.sleep(10000);
             }
             fos.close();
 
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }

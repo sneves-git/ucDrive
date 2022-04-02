@@ -132,8 +132,6 @@ public class Client {
                             }
                     }
                     break;
-                case 3:
-                    break;
             }
         } while (choice != 3);
     }

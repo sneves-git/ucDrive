@@ -18,49 +18,63 @@ public class AuthenticatedMenu {
         int choice = 0;
         String option = in.readUTF();
 
-         if (!option.equals("Menu!")) {
-             try {
+        if (!option.equals("Menu!")) {
+            try {
                 choice = Integer.parseInt(option);
-             } catch (NumberFormatException e) {
+                System.out.println(
+                        "----------------------------------------------------------------------------------------");
+                System.out.println(
+                        "Due to an error in the last session your previous operation did not finish successfully!");
+            } catch (NumberFormatException e) {
                 choice = 0;
-             }
-         }
+            }
+        }
+        System.out.println("_CHOICE: " + choice);
 
         try {
             do {
+                if (choice == 0) {
+                    // printing Menu
+                    System.out.print(in.readUTF());
 
+                    // Read and send to server choice
+                    out.writeUTF(reader.readLine());
+
+                    try {
+                        // Read choice back and confirms if choice is invalid
+                        choice = Integer.parseInt(in.readUTF());
+
+                    } catch (NumberFormatException e) {
+                        choice = 0;
+                    }
+                }
                 switch (choice) {
-                    case 0:
-                        // printing Menu
-                        System.out.print(in.readUTF());
 
-                        // Read and send to server choice
-                        out.writeUTF(reader.readLine());
-
-                        try {
-                            // Read choice back and confirms if choice is invalid
-                            choice = Integer.parseInt(in.readUTF());
-
-                        } catch (NumberFormatException e) {
-                            choice = 0;
-                        }
-                        break;
                     case 1:
+                        System.out.println("ENTREI NO 1");
                         ChangePassword obj1 = new ChangePassword();
                         obj1.changePassword(in, out, reader);
+                        System.out.println("SAI NO 1");
+
                         break;
 
                     case 2:
+                        System.out.println("ENTREI NO 2");
+
                         ChangeClientDirectory obj2 = new ChangeClientDirectory();
                         obj2.changeClientDirectory(in, out, reader);
                         choice = 0;
                         break;
                     case 3:
+                        System.out.println("ENTREI NO 3");
+
                         ChangeServerDirectory obj3 = new ChangeServerDirectory();
                         obj3.changeServerDirectory(in, out, reader);
                         choice = 0;
                         break;
                     case 4:
+                        System.out.println("ENTREI NO 4");
+
                         ipAndPort.configureIpAndPortAfterLogin(reader);
 
                         in.close();

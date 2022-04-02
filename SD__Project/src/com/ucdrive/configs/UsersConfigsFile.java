@@ -72,6 +72,7 @@ public class UsersConfigsFile {
                         + "::"
                         + u.getLastSessionServer() + "::"
                         + u.getLastChoice() + "\n");
+
             }
             output.close();
         } catch (IOException e1) {

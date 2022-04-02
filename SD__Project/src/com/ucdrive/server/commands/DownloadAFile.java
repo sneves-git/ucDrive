@@ -78,15 +78,19 @@ public class DownloadAFile extends Thread {
 
                     }
                 } while (nread > -1);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
+                fis.close();
+                return;
+
             }
             fis.close();
-
+            System.out.println("VOU VOLTAR A METER A CHOICE A 0 DownloadAFile");
+            UsersConfigsFile config = new UsersConfigsFile();
+            config.updateLastChoice(lastChoice, user, users);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        UsersConfigsFile config = new UsersConfigsFile();
-        config.updateLastChoice(lastChoice, user, users);
+
     }
 }
