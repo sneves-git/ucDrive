@@ -107,11 +107,9 @@ public class Server1 {
             Thread heartbeatThread = new SecondaryHeartbeats(udpPortServer2, server2Ip);
             Thread fileThread = new SecondaryFileStorage(filePortServer1,
                     filePortServer2, server2Ip, server);
-            Thread updateFileStorage = new SecondaryUpdateFolderOrFile(filePortUpdateServer2, filePortUpdateServer1,server2Ip, server);
 
             heartbeatThread.join();
             fileThread.join();
-            updateFileStorage.join();
 
 
             new PrimaryHeartbeats(udpPortServer1);
